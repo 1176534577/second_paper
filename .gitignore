@@ -1,0 +1,16 @@
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+/data/
+
+/study_bfgs/
+
+
+/pic/
+/extra/
+/笔记/
