@@ -11,28 +11,26 @@ fontsize = 50
 length = 12
 width = 9
 
-fileName = r'\small_norm_4_28_11_42_29_0.2_0'
 
-
-def noise_free():
+def noise_free(fileName):
     k = 1000
     ans = []
-    with open(root_path + r'\data\compare\no_noise' + fileName, 'r') as r:
+    with open(root_path + r'\data\compare\noise_free' + fileName, 'r') as r:
         while (line := r.readline()) != '':
             ans.append(float(line))
     return k, ans
 
 
-def noise_constant():
+def noise_constant(fileName):
     k = 1000
     another_ans = []
-    with open(root_path + r'\data\compare\have_noise' + fileName, 'r') as r:
+    with open(root_path + r'\data\compare\noise_constant' + fileName, 'r') as r:
         while (line := r.readline()) != '':
             another_ans.append(float(line))
     return k, another_ans
 
 
-def noise_random():
+def noise_random(fileName):
     k = 2000
     noise_random = []
     with open(root_path + r'\data\compare\noise_random' + fileName, 'r') as r:
@@ -72,18 +70,20 @@ def plot(k, array, name):
     # plt.legend(loc="upper right")
     plt.show()
 
-def main(flag_free,flag_cosntant,free_random):
-    if flag_free:
-        k, array = noise_free()
+
+def main(type, suf):
+    fileName = r'\small_norm_' + suf
+    if type == 1:
+        k, array = noise_free(fileName)
         plot(k, array, '无噪声右')
-
-    if flag_cosntant:
-        k, array = noise_constant()
+    elif type == 2:
+        k, array = noise_constant(fileName)
         plot(k, array, '恒定噪声右')
-
-    if free_random:
-        k, array = noise_random()
+    elif type == 3:
+        k, array = noise_random(fileName)
         plot(k, array, '随机噪声右')
+    else:
+        raise ValueError('type只能是1，2，3')
 
 # 1执行，0不执行
-main(1,0,0)
+# main(1,0,0)

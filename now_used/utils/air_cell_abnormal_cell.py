@@ -36,7 +36,7 @@ def get_air(save=True):
             for val in air_cell:
                 w.write(f'{val}\n')
 
-    return air_cell
+    # return air_cell
 
 
 def get_empty_hole(save=True):
@@ -59,4 +59,4 @@ def get_empty_hole(save=True):
             for val in abnormal_cell:
                 w.write(f'{val}\n')
 
-    return abnormal_cell
+    # return abnormal_cell

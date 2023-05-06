@@ -86,7 +86,7 @@ class rnn:
         xiajie, shangjie = get_Bound(my, mx, mz, self.low, self.up)
         self.b = vstack((vstack((self.bb, -xiajie)), shangjie))
 
-    def solver(self, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10, number=0):
+    def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10, number=0):
         start = time.time()
         low = self.low
         up = self.up
@@ -107,7 +107,7 @@ class rnn:
         # 初始值
         # todo 修改
         # w[0, :] = matrix([[1, 2, 3] + init_value1])
-        w[0, :] = matrix([[2.65] * col + init_value1])
+        w[0, :] = matrix([[init_value] * col + init_value1])
 
         pinAk = pinv(self.A(initd))
 
@@ -224,9 +224,10 @@ class rnn:
             print("小二范数：", new_norm)
             # todo 暂时注释
             # 如果满足两次结果差值在1e-6内，则提前退出循环
-            if abs(old_norm - new_norm) < 1e-6:
+            if abs(old_norm - new_norm) < 1e-3:
                 print("两次误差小于1e-6,退出")
                 break
+            old_norm = new_norm
 
             # region 疑似是空洞的数目
             # count = 0
@@ -252,19 +253,16 @@ class rnn:
 
         # 记录数据
         # 使用时间信息来创建文件，以使文件名是唯一
-        now_time = datetime.now()
+        # now_time = datetime.now()
         with open(
-                root_path + r'\data\compare\no_noise\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                    tao), 'w') as wda, open(
-            root_path + r'\data\compare\no_noise\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                tao), 'w') as wxiao:
+                root_path + r'\data\compare\noise_free\big_norm_' + suf, 'w') as wda, open(
+            root_path + r'\data\compare\noise_free\small_norm_' + suf, 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\no_noise\\' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                    tao), 'w') as d:
+            with open(root_path + r'\data\compare\noise_free\\' + suf, 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -301,18 +299,19 @@ class rnn:
         print("用时：", end - start)
 
 
-def main():
+def main(suf):
     with open(root_path + r'\data\input\mesh1_copy.txt', 'r') as r:
         line = r.readline().strip().split()
         a, b, c = [int(i) for i in line]
     r = rnn(a, b, c)
     number = 0
     # for init_value in [0.0, -1000.0, 1000.0, ]:
-    for init_value in [0.0]:
-        r.solver(init_value, 50, 20, number)
-        number += 1
-
+    # for init_value in [0.0]:
+    # init_value = 1.2
+    init_value = 2.00
+    r.solver(suf, init_value, 50, 20, number)
+    number += 1
 
 # r.solver(0.1, 1, 2)
 
-main()
+# main()

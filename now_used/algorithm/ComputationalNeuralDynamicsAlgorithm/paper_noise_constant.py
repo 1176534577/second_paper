@@ -83,7 +83,7 @@ class rnn:
         xiajie, shangjie = get_Bound(my, mx, mz, self.dadengyu, self.xiaodengyu)
         self.b = vstack((vstack((self.bb, -xiajie)), shangjie))
 
-    def solver(self, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10, number=0):
+    def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10, number=0):
         start = time.time()
         low = self.low
         up = self.up
@@ -251,19 +251,16 @@ class rnn:
 
         # 记录数据
         # 使用时间信息来创建文件，以使文件名是唯一
-        now_time = datetime.now()
+        # now_time = datetime.now()
         with open(
-                root_path + r'\data\compare\no_noise\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                    tao), 'w') as wda, open(
-            root_path + r'\data\compare\no_noise\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                tao), 'w') as wxiao:
+                root_path + r'\data\compare\noise_constant\big_norm_' + suf, 'w') as wda, open(
+            root_path + r'\data\compare\noise_constant\small_norm_' + suf, 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\no_noise\\' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                    tao), 'w') as d:
+            with open(root_path + r'\data\compare\noise_constant\\' + suf, 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -299,229 +296,229 @@ class rnn:
         end = time.time()
         print("用时：", end - start)
 
-    '''def solver1(self, tao, waiceng=10, neiceng=10):
-        start = time.time()
-        dadengyu = self.dadengyu
-        xiaodengyu = self.xiaodengyu
-        row = self.row
-        col = self.col
-        print(f'小矩阵：{row}行{col}列')
-        print(f'大矩阵：{row + 3 * col}行{3 * col}列')
-        # tao = 0.1
-        # total = 10
-        w = matrix(zeros((waiceng * neiceng + 1, 3 * col)))
-        # h = 1
-        t = 0
+    # def solver1(self, tao, waiceng=10, neiceng=10):
+    #     start = time.time()
+    #     dadengyu = self.dadengyu
+    #     xiaodengyu = self.xiaodengyu
+    #     row = self.row
+    #     col = self.col
+    #     print(f'小矩阵：{row}行{col}列')
+    #     print(f'大矩阵：{row + 3 * col}行{3 * col}列')
+    #     # tao = 0.1
+    #     # total = 10
+    #     w = matrix(zeros((waiceng * neiceng + 1, 3 * col)))
+    #     # h = 1
+    #     t = 0
+    #
+    #     initlist = [random.random() for _ in range(2 * col)]
+    #     initd = matrix(initlist)
+    #
+    #     # initd = matrix([random.random() for _ in range(2 * col)])
+    #     # 第一次，即初始值,t=0对应的
+    #     # 初始值
+    #     w[0, :] = matrix([[2.65] * col + initlist])
+    #     # Hk = self.H(initd)
+    #     # print(id(Hk))
+    #     # print(id(self.H_A))
+    #
+    #     pinHk = pinv(self.H(initd))
+    #
+    #     Ak = self.A(initd)
+    #     # print(id(Ak))
+    #     # print(id(self.H_A))
+    #     # print(id(Hk))   id(Ak)==id(Hk) 引用类型
+    #
+    #     lk = self.b
+    #     integral = zeros((row + 2 * col, 1))
+    #     # r = 25
+    #     lamda = 1
+    #     gama = 10
+    #     # ee = zeros((waiceng * neiceng + 1, 1))
+    #     # eexiao = zeros((waiceng * neiceng + 1, 1))
+    #
+    #     ee = [0.0] * (waiceng * neiceng + 1)
+    #     eexiao = [0.0] * (waiceng * neiceng + 1)
+    #     print("初始化工作完成")
+    #
+    #     k = 0
+    #     # 第二次和第三次
+    #     # for k in range(2):
+    #     #     # 积分项部分
+    #     #     # common=Ak * w[k, :].T - lk
+    #     #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+    #     #     integral += (Ak * w[k, :].T - lk)
+    #     #
+    #     #     val = pinHk * (-h * (Ak * w[k, :].T - lk))
+    #     #     w[k + 1, :] = w[k, :] + val.T
+    #     #     d = w[k, col:3 * col]
+    #     #     t += tao
+    #     #     print(t)
+    #     #
+    #     #     count = 0
+    #     #     for val in w[k + 1, :col].tolist()[0]:
+    #     #         if val < 0 or val > 2.75:
+    #     #             count += 1
+    #     #     print(f'{count}个格子不在约束范围内，占比为{count / col * 100:.2f}%\n')
+    #     #     # Hk = self.H(d)
+    #     #     Ak = self.A(d)
+    #     #     lk = self.b
+    #     #     pinHk = pinv(self.H(d))
+    #
+    #     # for k in range(total - 1):
+    #     #     # 积分项
+    #     #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+    #     #     integral += (Ak * w[k, :].T - lk)
+    #     #
+    #     #     # val = pinHk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
+    #     #     val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
+    #     #
+    #     #     w[k + 1, :] = w[k, :] + val.T
+    #     #     d = w[k+1, col:3 * col]
+    #     #
+    #     #     t += tao
+    #     #     print(t)
+    #     #
+    #     #     count = 0
+    #     #     for val in w[k + 1, :col].tolist()[0]:
+    #     #         if val < 0 or val > 2.75:
+    #     #             count += 1
+    #     #     print(f'{count}个格子不在约束范围内，占比为{count / col * 100:.2f}%\n')
+    #     #     # Hk = self.H(d)
+    #     #     Ak = self.A(d)
+    #     #     lk = self.b
+    #     #     pinHk = pinv(self.H(d))
+    #     oldnorm = 0
+    #     noise_constant = matrix([10] * (row + 2 * col)).T
+    #
+    #     for i in range(waiceng):
+    #         for j in range(neiceng):
+    #             k = i * neiceng + j
+    #
+    #             # 积分项
+    #             ee[k] = norm(Ak * w[k, :].T - lk)
+    #             eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+    #             integral += (Ak * w[k, :].T - lk)
+    #
+    #             # val = pinHk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
+    #             # val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
+    #             val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * integral + noise_constant)
+    #
+    #             w[k + 1, :] = w[k, :] - val.T
+    #
+    #             t += tao
+    #             # print(t)
+    #
+    #             # 在内部强制限制一下
+    #             # for no, limit_value in enumerate(array(w[k + 1, :col])[0]):
+    #             #     if limit_value < 0:
+    #             #         w[k + 1, no] = 0
+    #             #     elif limit_value > xiaodengyu:
+    #             #         w[k + 1, no] = xiaodengyu
+    #
+    #         # count = 0
+    #         # for i in array(w[k+1, :col])[0]:
+    #         #     if 0 <= int(i) <= xiaodengyu:
+    #         #         count += 1
+    #         #     else:
+    #         #         print(i)
+    #         # print("数目:", count, "总数：", col)
+    #         # print("两者是否相等:", count == col)
+    #
+    #         d = w[k + 1, col:3 * col]
+    #         Ak = matrix(self.A(d))
+    #         pinHk = pinv(self.H(d))
+    #         print("二范数：", norm(Ak * w[k + 1, :].T - lk))
+    #
+    #         newnorm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
+    #         print("小二范数：", newnorm)
+    #
+    #         if abs(oldnorm - newnorm) < 1e-6:
+    #             print("两次误差小于1e-6,退出")
+    #             break
+    #
+    #         # with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\output\ans_" + str(tao)+"_"+str(waiceng), 'w') as d:
+    #         #     for value in array(w[k+1, :col])[0]:
+    #         #         d.write(f'{value}\n')
+    #
+    #         # count = 0
+    #         # for i in array(w[k + 1, :col])[0]:
+    #         #     if 1.1 <= int(i) <= 2.5:
+    #         #         count += 1
+    #         #     else:
+    #         #         print(i)
+    #         # print("疑似是空洞的数目:", count)
+    #
+    #     k += 1
+    #     print("运行了", k, "次")
+    #     # ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+    #     ee[k] = norm(Ak * w[k, :].T - lk)
+    #     eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+    #
+    #     # timee = [k * tao for k in range(waiceng * neiceng + 1)]
+    #     timee = [val * tao for val in range(k + 1)]
+    #     plt.rcParams['font.family'] = ['STFangsong']
+    #     plt.subplot(2, 1, 1)
+    #     plt.title(f"二范数 tao={tao}")
+    #     plt.xlabel("时间")
+    #     plt.ylabel("误差的二范数")
+    #     plt.plot(timee, ee[:k + 1])
+    #     plt.subplot(2, 1, 2)
+    #     plt.title(f"二范数 tao={tao}")
+    #     plt.xlabel("时间")
+    #     plt.ylabel("误差的二范数")
+    #     plt.plot(timee, eexiao[:k + 1])
+    #     plt.show()
+    #
+    #     # number = 1
+    #     now_time = datetime.now()
+    #
+    #     with open(r'..\data\compare\have_noise\normda_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+    #             tao), 'w') as wda, open(
+    #         r'..\data\compare\have_noise\normxiao_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+    #             tao), 'w') as wxiao:
+    #         for value_xiao, value_da in zip(ee[:k + 1], eexiao[:k + 1]):
+    #             wda.write(f'{value_xiao}\n')
+    #             wxiao.write(f'{value_da}\n')
+    #
+    #     # ans = [0] * self.cell_total
+    #     # # res=w[-1,:col]
+    #     # res = array(w[-1, :col]).reshape(col, )
+    #     # for key, value in enumerate(res):
+    #     #     ans[self.newtoold_col[key]-1] = value
+    #     # with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\output\res_tao_" + str(tao), 'w') as d:
+    #     #     for value in ans:
+    #     #         d.write(f'{value}\n')
+    #     end = time.time()
+    #     print("用时：", end - start)
+    #     print("最终二范数:", ee[k])
+    #     print("最终小二范数:", eexiao[k])
+    #     count = 0
+    #     # for i in array(w[waiceng * neiceng, :col])[0]:
+    #     for i in array(w[k, :col])[0]:
+    #         if dadengyu <= float(i) <= xiaodengyu:
+    #             count += 1
+    #         # else:
+    #         #     print(i)
+    #     print("数目:", count, "总数：", col)
+    #     print("两者是否相等:", count == col)
+    #     # print(array(w[waiceng * neiceng, :col])[0])
+    #     try:
+    #         with open(
+    #                 r"C:\Users\CHANG\Desktop\paper\calculate\data\compare\have_noise\ans_9_3_" + now_time.strftime(
+    #                     '%Y_%m_%d_%H_%M_%S') + '_' + str(
+    #                     tao),
+    #                 'w') as d:
+    #             # for value in array(w[waiceng * neiceng, :col])[0]:
+    #             for value in array(w[k, :col])[0]:
+    #                 d.write(f'{value}\n')
+    #     except Exception as e:
+    #         print(e)
 
-        initlist = [random.random() for _ in range(2 * col)]
-        initd = matrix(initlist)
 
-        # initd = matrix([random.random() for _ in range(2 * col)])
-        # 第一次，即初始值,t=0对应的
-        # 初始值
-        w[0, :] = matrix([[2.65] * col + initlist])
-        # Hk = self.H(initd)
-        # print(id(Hk))
-        # print(id(self.H_A))
-
-        pinHk = pinv(self.H(initd))
-
-        Ak = self.A(initd)
-        # print(id(Ak))
-        # print(id(self.H_A))
-        # print(id(Hk))   id(Ak)==id(Hk) 引用类型
-
-        lk = self.b
-        integral = zeros((row + 2 * col, 1))
-        # r = 25
-        lamda = 1
-        gama = 10
-        # ee = zeros((waiceng * neiceng + 1, 1))
-        # eexiao = zeros((waiceng * neiceng + 1, 1))
-
-        ee = [0.0] * (waiceng * neiceng + 1)
-        eexiao = [0.0] * (waiceng * neiceng + 1)
-        print("初始化工作完成")
-
-        k = 0
-        # 第二次和第三次
-        # for k in range(2):
-        #     # 积分项部分
-        #     # common=Ak * w[k, :].T - lk
-        #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
-        #     integral += (Ak * w[k, :].T - lk)
-        #
-        #     val = pinHk * (-h * (Ak * w[k, :].T - lk))
-        #     w[k + 1, :] = w[k, :] + val.T
-        #     d = w[k, col:3 * col]
-        #     t += tao
-        #     print(t)
-        #
-        #     count = 0
-        #     for val in w[k + 1, :col].tolist()[0]:
-        #         if val < 0 or val > 2.75:
-        #             count += 1
-        #     print(f'{count}个格子不在约束范围内，占比为{count / col * 100:.2f}%\n')
-        #     # Hk = self.H(d)
-        #     Ak = self.A(d)
-        #     lk = self.b
-        #     pinHk = pinv(self.H(d))
-
-        # for k in range(total - 1):
-        #     # 积分项
-        #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
-        #     integral += (Ak * w[k, :].T - lk)
-        #
-        #     # val = pinHk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
-        #     val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
-        #
-        #     w[k + 1, :] = w[k, :] + val.T
-        #     d = w[k+1, col:3 * col]
-        #
-        #     t += tao
-        #     print(t)
-        #
-        #     count = 0
-        #     for val in w[k + 1, :col].tolist()[0]:
-        #         if val < 0 or val > 2.75:
-        #             count += 1
-        #     print(f'{count}个格子不在约束范围内，占比为{count / col * 100:.2f}%\n')
-        #     # Hk = self.H(d)
-        #     Ak = self.A(d)
-        #     lk = self.b
-        #     pinHk = pinv(self.H(d))
-        oldnorm = 0
-        noise_constant = matrix([10] * (row + 2 * col)).T
-
-        for i in range(waiceng):
-            for j in range(neiceng):
-                k = i * neiceng + j
-
-                # 积分项
-                ee[k] = norm(Ak * w[k, :].T - lk)
-                eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
-                integral += (Ak * w[k, :].T - lk)
-
-                # val = pinHk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
-                # val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
-                val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * integral + noise_constant)
-
-                w[k + 1, :] = w[k, :] - val.T
-
-                t += tao
-                # print(t)
-
-                # 在内部强制限制一下
-                # for no, limit_value in enumerate(array(w[k + 1, :col])[0]):
-                #     if limit_value < 0:
-                #         w[k + 1, no] = 0
-                #     elif limit_value > xiaodengyu:
-                #         w[k + 1, no] = xiaodengyu
-
-            # count = 0
-            # for i in array(w[k+1, :col])[0]:
-            #     if 0 <= int(i) <= xiaodengyu:
-            #         count += 1
-            #     else:
-            #         print(i)
-            # print("数目:", count, "总数：", col)
-            # print("两者是否相等:", count == col)
-
-            d = w[k + 1, col:3 * col]
-            Ak = matrix(self.A(d))
-            pinHk = pinv(self.H(d))
-            print("二范数：", norm(Ak * w[k + 1, :].T - lk))
-
-            newnorm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
-            print("小二范数：", newnorm)
-
-            if abs(oldnorm - newnorm) < 1e-6:
-                print("两次误差小于1e-6,退出")
-                break
-
-            # with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\output\ans_" + str(tao)+"_"+str(waiceng), 'w') as d:
-            #     for value in array(w[k+1, :col])[0]:
-            #         d.write(f'{value}\n')
-
-            # count = 0
-            # for i in array(w[k + 1, :col])[0]:
-            #     if 1.1 <= int(i) <= 2.5:
-            #         count += 1
-            #     else:
-            #         print(i)
-            # print("疑似是空洞的数目:", count)
-
-        k += 1
-        print("运行了", k, "次")
-        # ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
-        ee[k] = norm(Ak * w[k, :].T - lk)
-        eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
-
-        # timee = [k * tao for k in range(waiceng * neiceng + 1)]
-        timee = [val * tao for val in range(k + 1)]
-        plt.rcParams['font.family'] = ['STFangsong']
-        plt.subplot(2, 1, 1)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, ee[:k + 1])
-        plt.subplot(2, 1, 2)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, eexiao[:k + 1])
-        plt.show()
-
-        # number = 1
-        now_time = datetime.now()
-
-        with open(r'..\data\compare\have_noise\normda_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                tao), 'w') as wda, open(
-            r'..\data\compare\have_noise\normxiao_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
-                tao), 'w') as wxiao:
-            for value_xiao, value_da in zip(ee[:k + 1], eexiao[:k + 1]):
-                wda.write(f'{value_xiao}\n')
-                wxiao.write(f'{value_da}\n')
-
-        # ans = [0] * self.cell_total
-        # # res=w[-1,:col]
-        # res = array(w[-1, :col]).reshape(col, )
-        # for key, value in enumerate(res):
-        #     ans[self.newtoold_col[key]-1] = value
-        # with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\output\res_tao_" + str(tao), 'w') as d:
-        #     for value in ans:
-        #         d.write(f'{value}\n')
-        end = time.time()
-        print("用时：", end - start)
-        print("最终二范数:", ee[k])
-        print("最终小二范数:", eexiao[k])
-        count = 0
-        # for i in array(w[waiceng * neiceng, :col])[0]:
-        for i in array(w[k, :col])[0]:
-            if dadengyu <= float(i) <= xiaodengyu:
-                count += 1
-            # else:
-            #     print(i)
-        print("数目:", count, "总数：", col)
-        print("两者是否相等:", count == col)
-        # print(array(w[waiceng * neiceng, :col])[0])
-        try:
-            with open(
-                    r"C:\Users\CHANG\Desktop\paper\calculate\data\compare\have_noise\ans_9_3_" + now_time.strftime(
-                        '%Y_%m_%d_%H_%M_%S') + '_' + str(
-                        tao),
-                    'w') as d:
-                # for value in array(w[waiceng * neiceng, :col])[0]:
-                for value in array(w[k, :col])[0]:
-                    d.write(f'{value}\n')
-        except Exception as e:
-            print(e)'''
-
-
-def main():
+def main(suf):
     with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\input\mesh1_copy.txt', 'r') as r:
         line = r.readline().strip().split()
         a, b, c = [int(i) for i in line]
     r = rnn(a, b, c)
-    r.solver(0.1, 20, 50)
+    r.solver(suf, 0.1, 20, 50)
 # r.solver(0.1, 1, 2)

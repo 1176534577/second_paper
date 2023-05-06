@@ -1,5 +1,5 @@
 """
- TOPIC 对比表格的代码
+ TOPIC 表格对比
 """
 
 import numpy as np
@@ -66,14 +66,27 @@ from now_used.utils.base import root_path
     return abnormal_cell"""
 
 
-def main(air_cell, empty_hole):
+def main(typeSuf):
     value_abnormal = []
     value_normal = []
     # with open(r'..\..\compare\data\output\res_tao_test_8_31_anneal','r') as r:
     # with open(r'..\..\compare\data\gongetidu_9_29','r') as r:
 
+    # 内部异常区
+    empty_hole=[]
+    with open(root_path + r'\data\output\abnormal_cell', 'r') as r:
+        while (r_line := r.readline()) != '':
+            empty_hole.append(float(r_line))
+
+    # 外部空气
+    air_cell=[]
+    with open(root_path + r'\data\output\air_cell', 'r') as r:
+        while (r_line := r.readline()) != '':
+            air_cell.append(float(r_line))
+
     # 将最终结果（所有的格子）传入
-    with open(r'..\..\data\output\final_need_you_1', 'r') as r:
+    # with open(r'..\..\data\output\final_need_you_1', 'r') as r:
+    with open(r'..\..\data\output'+typeSuf, 'r') as r:
         index = 1
         while (r_line := r.readline()) != '':
             if index in empty_hole:
@@ -92,4 +105,4 @@ def main(air_cell, empty_hole):
 
 
 
-main()
+# main()
