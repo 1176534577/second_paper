@@ -103,7 +103,6 @@ class rnn:
         # init_value1 = [2.65] * 2 * col
         initd = matrix(init_value1)
 
-
         # 第一次，即初始值,t=0对应的
         # 初始值
         # todo 修改
@@ -255,21 +254,17 @@ class rnn:
         # 使用时间信息来创建文件，以使文件名是唯一
         now_time = datetime.now()
         with open(
-                root_path + r'\data\compare\no_noise\big_norm_' + str(now_time.month) + '_' + str(
-                    now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                    now_time.minute) + '_' + str(now_time.second) + '_' + str(
-                    tao) + '_' + str(number), 'w') as wda, open(
-            root_path + r'\data\compare\no_noise\small_norm_' + str(now_time.month) + '_' + str(
-                now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as wxiao:
+                root_path + r'\data\compare\no_noise\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as wda, open(
+            root_path + r'\data\compare\no_noise\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\no_noise' + '\\' + str(
-                    now_time.month) + '_' + str(now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as d:
+            with open(root_path + r'\data\compare\no_noise\\' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -316,6 +311,8 @@ def main():
     for init_value in [0.0]:
         r.solver(init_value, 50, 20, number)
         number += 1
+
+
 # r.solver(0.1, 1, 2)
 
 main()

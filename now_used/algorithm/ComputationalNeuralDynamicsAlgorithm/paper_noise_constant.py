@@ -17,7 +17,7 @@ from now_used.utils.base import root_path
 class rnn:
     def __init__(self, my, mx, mz):
 
-        self.dadengyu=0
+        self.dadengyu = 0
         self.xiaodengyu = 3
         self.H_A = None
         self.b = None
@@ -184,7 +184,7 @@ class rnn:
                 integral += (Ak * w[k, :].T - lk)
 
                 # 后半部分
-                val = pinAk * ((Ak * w[k, :].T - lk) - gama * integral+noise_constant)
+                val = pinAk * ((Ak * w[k, :].T - lk) - gama * integral + noise_constant)
                 # 组合
                 w[k + 1, :] = w[k, :] - val.T
 
@@ -253,21 +253,17 @@ class rnn:
         # 使用时间信息来创建文件，以使文件名是唯一
         now_time = datetime.now()
         with open(
-                root_path + r'\data\compare\no_noise\big_norm_' + str(now_time.month) + '_' + str(
-                    now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                    now_time.minute) + '_' + str(now_time.second) + '_' + str(
-                    tao) + '_' + str(number), 'w') as wda, open(
-            root_path + r'\data\compare\no_noise\small_norm_' + str(now_time.month) + '_' + str(
-                now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as wxiao:
+                root_path + r'\data\compare\no_noise\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as wda, open(
+            root_path + r'\data\compare\no_noise\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\no_noise' + '\\' + str(
-                    now_time.month) + '_' + str(now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as d:
+            with open(root_path + r'\data\compare\no_noise\\' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -303,10 +299,9 @@ class rnn:
         end = time.time()
         print("用时：", end - start)
 
-
-    def solver1(self, tao, waiceng=10, neiceng=10):
+    '''def solver1(self, tao, waiceng=10, neiceng=10):
         start = time.time()
-        dadengyu=self.dadengyu
+        dadengyu = self.dadengyu
         xiaodengyu = self.xiaodengyu
         row = self.row
         col = self.col
@@ -344,9 +339,8 @@ class rnn:
         # ee = zeros((waiceng * neiceng + 1, 1))
         # eexiao = zeros((waiceng * neiceng + 1, 1))
 
-
-        ee=[0.0]*(waiceng*neiceng+1)
-        eexiao=[0.0]*(waiceng*neiceng+1)
+        ee = [0.0] * (waiceng * neiceng + 1)
+        eexiao = [0.0] * (waiceng * neiceng + 1)
         print("初始化工作完成")
 
         k = 0
@@ -396,8 +390,8 @@ class rnn:
         #     Ak = self.A(d)
         #     lk = self.b
         #     pinHk = pinv(self.H(d))
-        oldnorm=0
-        noise_constant=matrix([10]*(row+2*col)).T
+        oldnorm = 0
+        noise_constant = matrix([10] * (row + 2 * col)).T
 
         for i in range(waiceng):
             for j in range(neiceng):
@@ -410,7 +404,7 @@ class rnn:
 
                 # val = pinHk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
                 # val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
-                val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * integral+noise_constant)
+                val = pinHk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * integral + noise_constant)
 
                 w[k + 1, :] = w[k, :] - val.T
 
@@ -438,10 +432,10 @@ class rnn:
             pinHk = pinv(self.H(d))
             print("二范数：", norm(Ak * w[k + 1, :].T - lk))
 
-            newnorm=norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
+            newnorm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
             print("小二范数：", newnorm)
 
-            if abs(oldnorm-newnorm)<1e-6:
+            if abs(oldnorm - newnorm) < 1e-6:
                 print("两次误差小于1e-6,退出")
                 break
 
@@ -458,33 +452,36 @@ class rnn:
             # print("疑似是空洞的数目:", count)
 
         k += 1
-        print("运行了",k,"次")
+        print("运行了", k, "次")
         # ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
         ee[k] = norm(Ak * w[k, :].T - lk)
         eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
 
         # timee = [k * tao for k in range(waiceng * neiceng + 1)]
-        timee = [val * tao for val in range(k+1)]
+        timee = [val * tao for val in range(k + 1)]
         plt.rcParams['font.family'] = ['STFangsong']
         plt.subplot(2, 1, 1)
         plt.title(f"二范数 tao={tao}")
         plt.xlabel("时间")
         plt.ylabel("误差的二范数")
-        plt.plot(timee, ee[:k+1])
+        plt.plot(timee, ee[:k + 1])
         plt.subplot(2, 1, 2)
         plt.title(f"二范数 tao={tao}")
         plt.xlabel("时间")
         plt.ylabel("误差的二范数")
-        plt.plot(timee, eexiao[:k+1])
+        plt.plot(timee, eexiao[:k + 1])
         plt.show()
 
-        number=1
+        # number = 1
+        now_time = datetime.now()
 
-        with open(r'..\data\compare\have_noise\normda_'+str(number),'w') as wda,open(r'..\data\compare\have_noise\normxiao_'+str(number),'w') as wxiao:
-            for value_xiao,value_da in zip(ee[:k+1],eexiao[:k+1]):
+        with open(r'..\data\compare\have_noise\normda_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wda, open(
+            r'..\data\compare\have_noise\normxiao_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wxiao:
+            for value_xiao, value_da in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_xiao}\n')
                 wxiao.write(f'{value_da}\n')
-
 
         # ans = [0] * self.cell_total
         # # res=w[-1,:col]
@@ -509,12 +506,17 @@ class rnn:
         print("两者是否相等:", count == col)
         # print(array(w[waiceng * neiceng, :col])[0])
         try:
-            with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\compare\have_noise\ans_9_3_" + str(tao)+str(number), 'w') as d:
+            with open(
+                    r"C:\Users\CHANG\Desktop\paper\calculate\data\compare\have_noise\ans_9_3_" + now_time.strftime(
+                        '%Y_%m_%d_%H_%M_%S') + '_' + str(
+                        tao),
+                    'w') as d:
                 # for value in array(w[waiceng * neiceng, :col])[0]:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
-            print(e)
+            print(e)'''
+
 
 def main():
     with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\input\mesh1_copy.txt', 'r') as r:

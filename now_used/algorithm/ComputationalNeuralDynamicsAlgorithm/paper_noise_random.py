@@ -183,7 +183,7 @@ class rnn:
                 integral += (Ak * w[k, :].T - lk)
 
                 # 后半部分
-                val = pinAk * ((Ak * w[k, :].T - lk) - gama * integral+noise_random)
+                val = pinAk * ((Ak * w[k, :].T - lk) - gama * integral + noise_random)
                 # 组合
                 w[k + 1, :] = w[k, :] - val.T
 
@@ -252,21 +252,17 @@ class rnn:
         # 使用时间信息来创建文件，以使文件名是唯一
         now_time = datetime.now()
         with open(
-                root_path + r'\data\compare\no_noise\big_norm_' + str(now_time.month) + '_' + str(
-                    now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                    now_time.minute) + '_' + str(now_time.second) + '_' + str(
-                    tao) + '_' + str(number), 'w') as wda, open(
-            root_path + r'\data\compare\no_noise\small_norm_' + str(now_time.month) + '_' + str(
-                now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as wxiao:
+                root_path + r'\data\compare\no_noise\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as wda, open(
+            root_path + r'\data\compare\no_noise\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\no_noise' + '\\' + str(
-                    now_time.month) + '_' + str(now_time.day) + '_' + str(now_time.hour) + '_' + str(
-                now_time.minute) + '_' + str(now_time.second) + '_' + str(tao) + '_' + str(number), 'w') as d:
+            with open(root_path + r'\data\compare\no_noise\\' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -302,7 +298,7 @@ class rnn:
         end = time.time()
         print("用时：", end - start)
 
-    def solver1(self, tao, waiceng=10, neiceng=10, number=0):
+    '''def solver1(self, tao, waiceng=10, neiceng=10, number=0):
         start = time.time()
         dadengyu = self.dadengyu
         xiaodengyu = self.xiaodengyu
@@ -481,10 +477,10 @@ class rnn:
 
         # with open(r'..\data\compare\noise_random\normda_'+str(number),'w') as wda,open(r'..\data\compare\noise_random\normxiao_'+str(number),'w') as wxiao:
         with open(
-                r'..\data\compare\noise_random\big_norm_' + str(now_time.month) + '_' + str(now_time.day) + '_' + str(
-                    tao) + '_' + str(number), 'w') as wda, open(
-            r'..\data\compare\noise_random\small_norm_' + str(now_time.month) + '_' + str(
-                now_time.day) + '_' + str(tao) + '_' + str(number), 'w') as wxiao:
+                r'..\data\compare\noise_random\big_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as wda, open(
+            r'..\data\compare\noise_random\small_norm_' + now_time.strftime('%Y_%m_%d_%H_%M_%S') + '_' + str(
+                tao), 'w') as wxiao:
             for value_xiao, value_da in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_xiao}\n')
                 wxiao.write(f'{value_da}\n')
@@ -513,13 +509,14 @@ class rnn:
         # print(array(w[waiceng * neiceng, :col])[0])
         try:
             # with open(r"C:\Users\CHANG\Desktop\paper\calculate\data\compare\have_noise\ans_9_3_" + str(tao)+str(number), 'w') as d:
-            with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\compare\noise_random' + '\\' + str(
-                    now_time.month) + '_' + str(now_time.day) + '_' + str(tao) + '_' + str(number), 'w') as d:
+            with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\compare\noise_random\\' + now_time.strftime(
+                    '%Y_%m_%d_%H_%M_%S') + '_' + str(
+                    tao), 'w') as d:
                 # for value in array(w[waiceng * neiceng, :col])[0]:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
-            print(e)
+            print(e)'''
 
 
 def main():
