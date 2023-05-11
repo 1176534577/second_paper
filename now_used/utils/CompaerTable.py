@@ -4,7 +4,7 @@
 
 import numpy as np
 
-from now_used.utils.base import root_path
+from now_used.utils.base import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random
 
 """def get_air(save=True):
     # 空气
@@ -72,28 +72,28 @@ def main(type, suf):
 
     # 内部异常区
     empty_hole = []
-    with open(root_path + r'\data\output\abnormal_cell', 'r') as r:
+    with open(abnormal_cell_path, 'r') as r:
         while (r_line := r.readline()) != '':
             empty_hole.append(float(r_line))
 
     # 外部空气
     air_cell = []
-    with open(root_path + r'\data\output\air_cell', 'r') as r:
+    with open(air_cell_path, 'r') as r:
         while (r_line := r.readline()) != '':
             air_cell.append(float(r_line))
 
     if type == 1:
-        noise_type = r'\noise_free'
+        path = MA_free
     elif type == 2:
-        noise_type = r'\noise_constant'
+        path = MA_constant
     elif type == 3:
-        noise_type = r'\noise_random'
+        path = MA_random
     else:
         raise ValueError('type只能是1，2，3')
 
     # 将最终结果（所有的格子）传入
     # with open(r'..\..\data\output\final_need_you_1', 'r') as r:
-    with open(root_path + r'\data\output' + noise_type + r'\res_' + suf, 'r') as r:
+    with open(path + suf + r'\all_res', 'r') as r:
         index = 1
         while (r_line := r.readline()) != '':
             if index in empty_hole:

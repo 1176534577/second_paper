@@ -1,21 +1,27 @@
-﻿import random
+﻿import os
 import time
-# import sympy
-from datetime import datetime
 
 from matplotlib import pyplot as plt
 # from sympy import zeros, Matrix, eye
 from numpy import zeros, matrix, eye, hstack, vstack, array
 from numpy.linalg import pinv, norm
 
+from now_used.algorithm.Algorithm import Algorithm
 from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getBound import get_Bound
+from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b
-from now_used.utils.base import root_path
+from now_used.utils.base import MA_constant
 
 
-class rnn:
-    def __init__(self, my, mx, mz):
+# import sympy
+
+
+class rnn(Algorithm):
+    def __init__(self):
+        # with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\input\mesh1_copy.txt', 'r') as r:
+        #     line = r.readline().strip().split()
+        my, mx, mz = getabc()
 
         self.H_A = None
         self.b = None
@@ -82,6 +88,10 @@ class rnn:
         """
         xiajie, shangjie = get_Bound(my, mx, mz, self.low, self.up)
         self.b = vstack((vstack((self.bb, -xiajie)), shangjie))
+
+    def main(self, suf):
+        # 包装一层
+        self.solver(suf, 2.3, 50, 1)
 
     def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10):
         start = time.time()
@@ -256,15 +266,20 @@ class rnn:
         # 记录数据
         # 使用时间信息来创建文件，以使文件名是唯一
         # now_time = datetime.now()
+
+        # 创建以时间命名的文件夹，因为是以时间命名的，因此此文件夹之前必然不存在
+        path = MA_constant + suf
+        os.makedirs(path)
+
         with open(
-                root_path + r'\data\compare\noise_constant\big_norm_' + suf, 'w') as wda, open(
-            root_path + r'\data\compare\noise_constant\small_norm_' + suf, 'w') as wxiao:
+                path + r'\big_norm', 'w') as wda, open(
+            path + r'\small_norm', 'w') as wxiao:
             for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
-            with open(root_path + r'\data\compare\noise_constant\\' + suf, 'w') as d:
+            with open(path + r'\res', 'w') as d:
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
         except Exception as e:
@@ -518,11 +533,4 @@ class rnn:
     #     except Exception as e:
     #         print(e)
 
-
-def main(suf):
-    with open(r'C:\Users\CHANG\Desktop\paper\calculate\data\input\mesh1_copy.txt', 'r') as r:
-        line = r.readline().strip().split()
-        a, b, c = [int(i) for i in line]
-    r = rnn(a, b, c)
-    r.solver(suf, 2.3, 50, 1)
 # r.solver(0.1, 1, 2)

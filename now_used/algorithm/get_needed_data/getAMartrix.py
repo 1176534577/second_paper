@@ -5,7 +5,7 @@
 # from numpy.linalg import matrix_rank
 from sympy import zeros
 
-from now_used.utils.base import root_path
+from now_used.utils.base import ijg
 
 
 class getA:
@@ -69,7 +69,7 @@ class getA:
 
         # 压缩行、列
         # abspath=os.path.abspath('.')
-        with open(root_path + r'\data\output\ijg', 'r') as d:
+        with open(ijg, 'r') as d:
             self.__cell_total=int(d.readline().strip().split()[1])
             oldtonew_row = {}
             oldtonew_col = {}
@@ -90,7 +90,7 @@ class getA:
         # m = [[0] * col for _ in range(row)]
 
         # 填入矩阵
-        with open(root_path + r'\data\output\ijg', 'r') as d:
+        with open(ijg, 'r') as d:
             d.readline()
             while (d_line := d.readline()) != '':
                 shuzu = d_line.strip().split()

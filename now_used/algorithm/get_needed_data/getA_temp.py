@@ -1,10 +1,10 @@
 ﻿# import sympy
 
-from numpy import zeros
 # from numpy.linalg import matrix_rank
 import numpy as np
+from numpy import zeros
 
-from now_used.utils.base import root_path
+from now_used.utils.base import ijg
 
 
 class getA:
@@ -80,8 +80,8 @@ class getA:
 
         # 压缩行、列
         # abspath=os.path.abspath('.')
-        path=root_path + r'\data\output\new_ijg'
-        with open(path, 'r') as d:
+        # path=root_path + r'\data\output\new_ijg'
+        with open(ijg, 'r') as d:
             self.__cell_total = int(d.readline().strip().split()[1])
             oldtonew_row = {}
             oldtonew_col = {}
@@ -102,7 +102,7 @@ class getA:
         # m = [[0] * col for _ in range(row)]
 
         # 填入矩阵
-        with open(path, 'r') as d:
+        with open(ijg, 'r') as d:
             d.readline()
             while (d_line := d.readline()) != '':
                 shuzu = d_line.strip().split()

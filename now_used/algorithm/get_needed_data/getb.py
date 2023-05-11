@@ -3,7 +3,7 @@
 from numpy import matrix
 
 # from Paper.getA_temp import getA, count_less_and_equal_num
-from now_used.utils.base import root_path
+from now_used.utils.base import ray_way_j
 
 
 def return_b(col):
@@ -13,7 +13,7 @@ def return_b(col):
 
     # index = 0
     m = []
-    with open(root_path + r'\data\output\ray_way_j', 'r') as d:
+    with open(ray_way_j, 'r') as d:
         while (d_line := d.readline()) != '':
             # 增加平滑性
             # value = float(d_line.strip())
@@ -36,7 +36,7 @@ def return_b_normal():
     # li = count_less_and_equal_num(a.return_A(), 10)
     #
     m = []
-    with open(r'..\data\output\ray_way_j', 'r') as d:
+    with open(ray_way_j, 'r') as d:
         while (d_line := d.readline()) != '':
             # 增加平滑性
             m.append(float(d_line.strip()))

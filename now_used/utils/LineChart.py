@@ -6,7 +6,7 @@ from math import log10
 
 from matplotlib import pyplot as plt
 
-from now_used.utils.base import root_path
+from now_used.utils.base import MA_free, MA_constant, MA_random
 
 fontsize = 50
 length = 12
@@ -18,7 +18,7 @@ amount = 200
 def noise_free(suf):
     ans = []
     # with open(root_path+r'\data\output\final_need_my_2', 'r') as r:
-    with open(root_path+r'\data\output\noise_free\res_without_outside_'+suf, 'r') as r:
+    with open(MA_free + suf + r'\res_without_outside', 'r') as r:
         while (line := r.readline()) != '':
             ans.append(float(line))
     max_val = max(ans)
@@ -42,7 +42,7 @@ def noise_free(suf):
 def noise_constant(suf):
     another_ans = []
     # with open(root_path+r'\data\output\final_need_my_2', 'r') as r:
-    with open(root_path+r'\data\output\noise_constant\res_without_outside_'+suf, 'r') as r:
+    with open(MA_constant + suf + r'\res_without_outside', 'r') as r:
         while (line := r.readline()) != '':
             another_ans.append(float(line))
     max_val = max(another_ans)
@@ -65,7 +65,7 @@ def noise_constant(suf):
 def noise_random(suf):
     noise_random_ans = []
     # with open(root_path+r'\data\output\final_need_my_2', 'r') as r:
-    with open(root_path+r'\data\output\noise_random\res_without_outside_'+suf, 'r') as r:
+    with open(MA_random + suf + r'\res_without_outside', 'r') as r:
         while (line := r.readline()) != '':
             noise_random_ans.append(float(line))
     max_val = max(noise_random_ans)
@@ -117,14 +117,14 @@ def plot(min_val, size, res, name):
     plt.show()
 
 
-def main(type,suf):
-    if type==1:
+def main(type, suf):
+    if type == 1:
         min_val, size, res = noise_free(suf)
         plot(min_val, size, res, '无噪声')
-    elif type==2:
+    elif type == 2:
         min_val, size, res = noise_constant(suf)
         plot(min_val, size, res, '恒定噪声')
-    elif type==3:
+    elif type == 3:
         min_val, size, res = noise_random(suf)
         plot(min_val, size, res, '随机噪声')
     else:

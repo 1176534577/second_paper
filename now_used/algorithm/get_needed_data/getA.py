@@ -1,11 +1,11 @@
 ﻿# import sympy
 
-from numpy import zeros, array, matrix
 # from numpy.linalg import matrix_rank
 import numpy as np
+from numpy import zeros, array, matrix
 
-from now_used.utils.base import root_path
 from now_used.algorithm.get_needed_data.AddGetA import getpinghua
+from now_used.utils.base import root_path, air_cell_path, ijg
 
 
 class getA:
@@ -58,7 +58,7 @@ class getA:
             for z in range(mz):
                 air_cell.add((mx - 1) * my * mz + y * mz + z + 1)
 
-        with open(root_path + r'\data\output\air_cell', 'w') as w:
+        with open(air_cell_path, 'w') as w:
             for air in air_cell:
                 w.write(f'{air}\n')
 
@@ -81,8 +81,8 @@ class getA:
 
         # 压缩行、列  todo 列不是有序的，乱序的，需要更改
         # abspath=os.path.abspath('.')
-        path = root_path + r'\data\output\new_ijg'
-        with open(path, 'r') as d:
+        # path = root_path + r'\data\output\new_ijg'
+        with open(ijg, 'r') as d:
             self.__cell_total = int(d.readline().strip().split()[1])
             oldtonew_row = {}
             oldtonew_col = {}
@@ -110,7 +110,7 @@ class getA:
         # m = [[0] * col for _ in range(row)]
 
         # 填入矩阵
-        with open(path, 'r') as d:
+        with open(ijg, 'r') as d:
             d.readline()
             while (d_line := d.readline()) != '':
                 shuzu = d_line.strip().split()

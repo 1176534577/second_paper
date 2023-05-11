@@ -1,5 +1,3 @@
-from numpy import array
-
 from Paper.getA import getA
 
 my, mx, mz = 13, 14, 10

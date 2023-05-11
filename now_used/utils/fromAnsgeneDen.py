@@ -1,10 +1,9 @@
 """
  TOPIC 从求解结果到最终所有格子的结果
 """
-from datetime import datetime
 
 from now_used.algorithm.get_needed_data.getA import getA
-from now_used.utils.base import root_path
+from now_used.utils.base import air_cell_path, MA_free, MA_constant, MA_random
 
 
 # ylist = [7, 8, 9]
@@ -44,7 +43,7 @@ def main(type, suf):
     ans_without_outside = [2.65] * a.return_cell_total()
 
     # 外部空气
-    with open(root_path + r'\data\output\air_cell', 'r') as r:
+    with open(air_cell_path, 'r') as r:
         while (r_line := r.readline()) != '':
             ans[int(r_line.strip().split()[0]) - 1] = 0
             ans_without_outside[int(r_line.strip().split()[0]) - 1] = -2
@@ -55,11 +54,11 @@ def main(type, suf):
     # col = a.return_col()
 
     if type == 1:
-        noise_type = r'\noise_free'
+        path = MA_free
     elif type == 2:
-        noise_type = r'\noise_constant'
+        path = MA_constant
     elif type == 3:
-        noise_type = r'\noise_random'
+        path = MA_random
     else:
         raise ValueError('type只能是1，2，3')
 
@@ -68,7 +67,7 @@ def main(type, suf):
     # suf = r'\3_11_18_56_14_0.2_0'
 
     # 将压缩后的体素的编号还原为压缩前的编号
-    with open(root_path + r'\data\compare' + noise_type + "\\" + suf, 'r') as r:
+    with open(path + suf+r'res', 'r') as r:
         index = 0
         while (line := r.readline()) != '':
             val = float(line.strip().split()[0])
@@ -77,12 +76,12 @@ def main(type, suf):
             index += 1
 
     # 每个体素的密度写入文件
-    with open(root_path + r'\data\output' + noise_type + r'\res_' + suf, 'w') as w:
+    with open(path + suf+r'all_res', 'w') as w:
         for value in ans:
             w.write(f'{value}\n')
 
     # 除去外部空气的每个体素的密度写入文件
-    with open(root_path + r'\data\output' + noise_type + r'\res_without_outside_' + suf, 'w') as w:
+    with open(path + suf+r'res_without_air', 'w') as w:
         for value in ans_without_outside:
             if value != -2:
                 w.write(f'{value}\n')

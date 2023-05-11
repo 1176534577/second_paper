@@ -1,5 +1,7 @@
-from now_used.algorithm.get_needed_data.getA import getA
 from numpy import matrix
+
+from now_used.algorithm.get_needed_data.getA import getA
+
 
 def get_Bound(my, mx, mz, dadengyu, xiaodengyu):
     """

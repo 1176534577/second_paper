@@ -5,35 +5,35 @@
 from matplotlib import pyplot as plt
 
 # plt.rc('font',size=7)
-from now_used.utils.base import root_path
+from now_used.utils.base import MA_free, MA_random, MA_constant
 
 fontsize = 50
 length = 12
 width = 9
 
 
-def noise_free(fileName):
+def noise_free(suf):
     # k = 1000
     ans = []
-    with open(root_path + r'\data\compare\noise_free' + fileName, 'r') as r:
+    with open(MA_free+suf+ r'\small_norm', 'r') as r:
         while (line := r.readline()) != '':
             ans.append(float(line))
     return ans
 
 
-def noise_constant(fileName):
+def noise_constant(suf):
     # k = 1000
     another_ans = []
-    with open(root_path + r'\data\compare\noise_constant' + fileName, 'r') as r:
+    with open(MA_constant+suf+ r'\small_norm', 'r') as r:
         while (line := r.readline()) != '':
             another_ans.append(float(line))
     return another_ans
 
 
-def noise_random(fileName):
+def noise_random(suf):
     # k = 2000
     noise_random = []
-    with open(root_path + r'\data\compare\noise_random' + fileName, 'r') as r:
+    with open(MA_random+suf+ r'\small_norm', 'r') as r:
         while (line := r.readline()) != '':
             noise_random.append(float(line))
     return noise_random
@@ -72,15 +72,14 @@ def plot(tao, array, name):
 
 
 def main(tao, type, suf):
-    fileName = r'\small_norm_' + suf
     if type == 1:
-        array = noise_free(fileName)
+        array = noise_free(suf)
         plot(tao, array, '无噪声右')
     elif type == 2:
-        array = noise_constant(fileName)
+        array = noise_constant(suf)
         plot(tao, array, '恒定噪声右')
     elif type == 3:
-        array = noise_random(fileName)
+        array = noise_random(suf)
         plot(tao, array, '随机噪声右')
     else:
         raise ValueError('type只能是1，2，3')

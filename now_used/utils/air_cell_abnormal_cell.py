@@ -1,7 +1,8 @@
 """
  TOPIC 计算空气格子和异常区格子编号，从1开始
 """
-from now_used.utils.base import root_path
+from now_used.utils.base import air_cell_path, abnormal_cell_path
+
 
 def get_air(save=True):
     # 空气
@@ -32,7 +33,7 @@ def get_air(save=True):
 
     # 存入文件，下次不需要再读 以下代码还未改
     if save:
-        with open(root_path + r'\data\output\air_cell', 'w') as w:
+        with open(air_cell_path, 'w') as w:
             for val in air_cell:
                 w.write(f'{val}\n')
 
@@ -55,7 +56,7 @@ def get_empty_hole(save=True):
                 abnormal_cell.append(x * my * mz + y * mz + z + 1)
 
     if save:
-        with open(root_path + r'\data\output\abnormal_cell', 'w') as w:
+        with open(abnormal_cell_path, 'w') as w:
             for val in abnormal_cell:
                 w.write(f'{val}\n')
 
