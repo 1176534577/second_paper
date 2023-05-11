@@ -4,8 +4,10 @@ root_path_output = root_path + r'\output'
 # 模型大小不变，空气编号就不变
 air_cell_path = root_path_output + r'\air_cell'
 
-# 修改此处
-type = 1
+# VITAL 修改此处
+# 算法类型1-6
+type = 6
+# 数据集1-4
 dataset = r'\dataset1'
 
 # 输入

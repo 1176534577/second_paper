@@ -3,9 +3,9 @@ from random import random, randint
 
 import numpy as np
 
-from get_needed_data import getabc, getb
-from get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
-from get_needed_data.getA import getA
+from now_used.algorithm.get_needed_data import getabc, getb
+from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
+from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.Algorithm import Algorithm
 # x为公式里的x1,y为公式里面的x2
 from now_used.utils.base import SA_all_res

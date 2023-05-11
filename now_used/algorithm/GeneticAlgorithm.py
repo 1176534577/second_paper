@@ -1,10 +1,10 @@
 import numpy as np
 
-from Algorithm import Algorithm
+from now_used.algorithm.Algorithm import Algorithm
 # 定义编码长度
-from get_needed_data import getabc, getb
-from get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
-from get_needed_data.getA import getA
+from now_used.algorithm.get_needed_data import getabc, getb
+from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
+from now_used.algorithm.get_needed_data.getA import getA
 from now_used.utils.base import GA_all_res
 
 
