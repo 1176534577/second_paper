@@ -1,5 +1,5 @@
 air_cell=[]
-with open(r'..\..\data\output\air_cell','r') as r:
+with open(r'../../data/output/old/air_cell', 'r') as r:
     while (line:=r.readline())!='':
         air_cell.append(int(line))
 

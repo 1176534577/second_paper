@@ -49,9 +49,9 @@ def noise_constant(suf):
     min_val = min(another_ans)
 
     lenngth = max_val - min_val
-    size = lenngth / 100
+    size = lenngth / amount
 
-    another_res = [0] * 100
+    another_res = [0] * amount
     for i in another_ans:
         if i == max_val:
             another_res[-1] += 1
@@ -72,9 +72,9 @@ def noise_random(suf):
     min_val = min(noise_random_ans)
 
     lenngth = max_val - min_val
-    size = lenngth / 100
+    size = lenngth / amount
 
-    noise_random_res = [0] * 100
+    noise_random_res = [0] * amount
     for i in noise_random_ans:
         if i == max_val:
             noise_random_res[-1] += 1

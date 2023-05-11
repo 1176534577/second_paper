@@ -13,36 +13,36 @@ width = 9
 
 
 def noise_free(fileName):
-    k = 1000
+    # k = 1000
     ans = []
     with open(root_path + r'\data\compare\noise_free' + fileName, 'r') as r:
         while (line := r.readline()) != '':
             ans.append(float(line))
-    return k, ans
+    return ans
 
 
 def noise_constant(fileName):
-    k = 1000
+    # k = 1000
     another_ans = []
     with open(root_path + r'\data\compare\noise_constant' + fileName, 'r') as r:
         while (line := r.readline()) != '':
             another_ans.append(float(line))
-    return k, another_ans
+    return another_ans
 
 
 def noise_random(fileName):
-    k = 2000
+    # k = 2000
     noise_random = []
     with open(root_path + r'\data\compare\noise_random' + fileName, 'r') as r:
         while (line := r.readline()) != '':
             noise_random.append(float(line))
-    return k, noise_random
+    return noise_random
 
 
-def plot(k, array, name):
-    tao = 0.1
-
-    timee = [val * tao for val in range(k + 1)]
+def plot(tao, array, name):
+    # tao = 0.1
+    k = len(array)
+    timee = [val * tao for val in range(k)]
 
     # 设置图片大小
     plt.figure(figsize=(length, width))
@@ -71,17 +71,17 @@ def plot(k, array, name):
     plt.show()
 
 
-def main(type, suf):
+def main(tao, type, suf):
     fileName = r'\small_norm_' + suf
     if type == 1:
-        k, array = noise_free(fileName)
-        plot(k, array, '无噪声右')
+        array = noise_free(fileName)
+        plot(tao, array, '无噪声右')
     elif type == 2:
-        k, array = noise_constant(fileName)
-        plot(k, array, '恒定噪声右')
+        array = noise_constant(fileName)
+        plot(tao, array, '恒定噪声右')
     elif type == 3:
-        k, array = noise_random(fileName)
-        plot(k, array, '随机噪声右')
+        array = noise_random(fileName)
+        plot(tao, array, '随机噪声右')
     else:
         raise ValueError('type只能是1，2，3')
 

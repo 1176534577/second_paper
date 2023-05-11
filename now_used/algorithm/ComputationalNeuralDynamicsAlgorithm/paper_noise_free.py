@@ -92,8 +92,9 @@ class rnn:
         up = self.up
         row = self.row
         col = self.col
+        # 此处的row已经是包含一个col了
         print(f'小矩阵：{row}行{col}列')
-        print(f'大矩阵：{row + 3 * col}行{3 * col}列')
+        print(f'大矩阵：{row + 2 * col}行{3 * col}列')
 
         w = matrix(zeros((outer_layer_cycle * inner_layer_cycle + 1, 3 * col)))
 
@@ -211,23 +212,24 @@ class rnn:
             # print("两者是否相等:", count == col)
             # endregion
 
+            print("二范数：", ee[k])
+            print("小二范数：", eexiao[k])
             # 每次结果的c要更新结果的d
             d = w[k + 1, col:3 * col]
             Ak = matrix(self.A(d))
             pinAk = pinv(self.A(d))
 
             # 整体的二范数
-            print("二范数：", norm(Ak * w[k + 1, :].T - lk))
+            # print("二范数：", norm(Ak * w[k, :].T - lk))
 
             # 只针对最原始的数据（基本+平滑性）的二范数
-            new_norm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
-            print("小二范数：", new_norm)
-            # todo 暂时注释
+            # new_norm = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+            # print("小二范数：", new_norm)
             # 如果满足两次结果差值在1e-6内，则提前退出循环
-            if abs(old_norm - new_norm) < 1e-3:
+            if abs(old_norm - eexiao[k]) < 1e-3 and k > 20:
                 print("两次误差小于1e-6,退出")
                 break
-            old_norm = new_norm
+            old_norm = eexiao[k]
 
             # region 疑似是空洞的数目
             # count = 0
@@ -308,8 +310,8 @@ def main(suf):
     # for init_value in [0.0, -1000.0, 1000.0, ]:
     # for init_value in [0.0]:
     # init_value = 1.2
-    init_value = 2.00
-    r.solver(suf, init_value, 50, 20, number)
+    init_value = 1.2
+    r.solver(suf, init_value, 50, 1, number)
     number += 1
 
 # r.solver(0.1, 1, 2)

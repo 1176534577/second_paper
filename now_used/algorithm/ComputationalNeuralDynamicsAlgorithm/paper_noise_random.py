@@ -17,12 +17,12 @@ from now_used.utils.base import root_path
 class rnn:
     def __init__(self, my, mx, mz):
 
-        self.dadengyu = 0
-        self.xiaodengyu = 3
         self.H_A = None
         self.b = None
         aa = getA.get_instance(my, mx, mz)
         # 目前需要在row的前面，因为在下面方法里面会更新row，可以防止col的后面
+        self.low = 0
+        self.up = 3
         self.a = aa.return_A()
         self.row = aa.return_row()
         self.col = aa.return_col()
@@ -80,17 +80,18 @@ class rnn:
         :return:
         :rtype: sympy.Matrix
         """
-        xiajie, shangjie = get_Bound(my, mx, mz, self.dadengyu, self.xiaodengyu)
+        xiajie, shangjie = get_Bound(my, mx, mz, self.low, self.up)
         self.b = vstack((vstack((self.bb, -xiajie)), shangjie))
 
-    def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10, number=0):
+    def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10):
         start = time.time()
         low = self.low
         up = self.up
         row = self.row
         col = self.col
+        # 此处的row已经是包含一个col了
         print(f'小矩阵：{row}行{col}列')
-        print(f'大矩阵：{row + 3 * col}行{3 * col}列')
+        print(f'大矩阵：{row + 2 * col}行{3 * col}列')
 
         w = matrix(zeros((outer_layer_cycle * inner_layer_cycle + 1, 3 * col)))
 
@@ -209,22 +210,25 @@ class rnn:
             # print("两者是否相等:", count == col)
             # endregion
 
+            print("二范数：", ee[k])
+            print("小二范数：", eexiao[k])
             # 每次结果的c要更新结果的d
             d = w[k + 1, col:3 * col]
             Ak = matrix(self.A(d))
             pinAk = pinv(self.A(d))
 
             # 整体的二范数
-            print("二范数：", norm(Ak * w[k + 1, :].T - lk))
+            # print("二范数：", norm(Ak * w[k + 1, :].T - lk))
 
             # 只针对最原始的数据（基本+平滑性）的二范数
-            new_norm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
-            print("小二范数：", new_norm)
+            # new_norm = norm(Ak[:row, :col] * w[k + 1, :col].T - lk[:row, :])
+            # print("小二范数：", new_norm)
             # todo 暂时注释
             # 如果满足两次结果差值在1e-6内，则提前退出循环
-            if abs(old_norm - new_norm) < 1e-6:
+            if abs(old_norm - eexiao[k]) < 1e-2 and k > 10:
                 print("两次误差小于1e-6,退出")
                 break
+            old_norm = eexiao[k]
 
             # region 疑似是空洞的数目
             # count = 0
@@ -521,5 +525,5 @@ def main(suf):
         line = r.readline().strip().split()
         a, b, c = [int(i) for i in line]
     r = rnn(a, b, c)
-    r.solver(suf, 0.1, 20, 100, 0)
+    r.solver(suf, 2.3, 50, 1)
 # r.solver(0.1, 1, 2)

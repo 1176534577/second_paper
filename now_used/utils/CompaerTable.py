@@ -6,7 +6,6 @@ import numpy as np
 
 from now_used.utils.base import root_path
 
-
 """def get_air(save=True):
     # 空气
     air_cell = set()
@@ -42,7 +41,6 @@ from now_used.utils.base import root_path
 
     return air_cell"""
 
-
 """def get_empty_hole(save=True):
     my, mx, mz = 13, 14, 10
 
@@ -66,27 +64,36 @@ from now_used.utils.base import root_path
     return abnormal_cell"""
 
 
-def main(typeSuf):
+def main(type, suf):
     value_abnormal = []
     value_normal = []
     # with open(r'..\..\compare\data\output\res_tao_test_8_31_anneal','r') as r:
     # with open(r'..\..\compare\data\gongetidu_9_29','r') as r:
 
     # 内部异常区
-    empty_hole=[]
+    empty_hole = []
     with open(root_path + r'\data\output\abnormal_cell', 'r') as r:
         while (r_line := r.readline()) != '':
             empty_hole.append(float(r_line))
 
     # 外部空气
-    air_cell=[]
+    air_cell = []
     with open(root_path + r'\data\output\air_cell', 'r') as r:
         while (r_line := r.readline()) != '':
             air_cell.append(float(r_line))
 
+    if type == 1:
+        noise_type = r'\noise_free'
+    elif type == 2:
+        noise_type = r'\noise_constant'
+    elif type == 3:
+        noise_type = r'\noise_random'
+    else:
+        raise ValueError('type只能是1，2，3')
+
     # 将最终结果（所有的格子）传入
     # with open(r'..\..\data\output\final_need_you_1', 'r') as r:
-    with open(r'..\..\data\output'+typeSuf, 'r') as r:
+    with open(root_path + r'\data\output' + noise_type + r'\res_' + suf, 'r') as r:
         index = 1
         while (r_line := r.readline()) != '':
             if index in empty_hole:
@@ -102,7 +109,5 @@ def main(typeSuf):
     new_value_normal = [val - 2.65 for val in value_normal]
     print(f'异常区 {np.linalg.norm(new_value_abnormal):.4}')
     print(f'非异常区 {np.linalg.norm(new_value_normal):.4}')
-
-
 
 # main()
