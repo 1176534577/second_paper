@@ -131,7 +131,7 @@ class CG(Algorithm):
         itern = 0
         W = np.zeros((self.col, 20000))
 
-        f = open("共轭.txt", 'w')
+        # f = open("共轭.txt", 'w')
 
         while k < maxk:
             W[:, k] = x0
@@ -153,7 +153,7 @@ class CG(Algorithm):
             # alpha=Wolfesearch(fun,gfun,dk,x0,1,0.1,2)
             x0 += alpha * dk
             gk_norm = np.linalg.norm(gk)
-            f.write(str(k) + '  ' + str(gk_norm) + "\n")
+            # f.write(str(k) + '  ' + str(gk_norm) + "\n")
             print(k, alpha, gk_norm)
             g0 = gk
             d0 = dk

@@ -1,3 +1,10 @@
+***执行步骤
+1. 执行combine4to1从原生数据生成obs
+2. 执行main_paper生成ijg文件和ray_way_j文件
+3. 执行最外层的main生成结果
+
+
+
 ***四个数据集
 - dataset1数据集1，外部2.65，内部1  
 - dataset2数据集2，外部2.65，内部1  

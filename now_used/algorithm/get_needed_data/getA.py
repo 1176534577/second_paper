@@ -94,10 +94,15 @@ class getA:
                 if row not in oldtonew_row.keys():
                     oldtonew_row[row] = new_row
                     new_row += 1
-                if col not in oldtonew_col.keys() and col not in air_cell:
-                    col_set.add(col)
-                    # oldtonew_col[col] = new_col
-                    # new_col += 1
+                # if col not in oldtonew_col.keys() and col not in air_cell:
+                #     col_set.add(col)
+                # oldtonew_col[col] = new_col
+                # new_col += 1
+        # 射线满足不了所有格子
+        for col in range(1, 1821):
+            if col not in air_cell:
+                col_set.add(col)
+
         new_col = 0
         col_list = list(col_set)
         col_list.sort()
@@ -139,7 +144,7 @@ class getA:
     def return_A(self):
         copym = matrix(self.__m)
         # 增加平滑性
-        pinghuaxing = 0.85 * np.eye(self.__col) - getpinghua()
+        pinghuaxing = 0.85 * np.eye(self.__col) - getpinghua(self.__col)
         copym = np.vstack((copym, pinghuaxing))
         # for i in range(self.__col):
         #     copym[i,i] += 0.5
@@ -147,7 +152,7 @@ class getA:
         return copym
 
     def return_A_test(self):
-        copym = matrix([[1, 2, 3], [4,5,6]])
+        copym = matrix([[1, 2, 3], [4, 5, 6]])
         # 增加平滑性
 
         self.__row = copym.shape[0]

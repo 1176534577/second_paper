@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from algorithm.ComputationalNeuralDynamicsAlgorithm import paper_noise_free, paper_noise_constant, paper_noise_random
+from now_used.algorithm.Algorithm import Algorithm
 
 from now_used.utils.base import type
 from utils import fromAnsgeneDen, LineChart, LineChart1, CompaerTable, air_cell_abnormal_cell
@@ -17,13 +18,11 @@ class AlgorithmFactory:
     def __init__(self):
         pass
 
-    def execute(self):
+    # 方法入口
+    def main(self):
+        self.selector()
 
-        now_time = datetime.now()
-        tao = 0.2
-        suf = now_time.strftime('%Y_%m_%d_%H_%M_%S')
-        # type = 1
-
+    def selector(self):
         if type == 1:
             subclass = paper_noise_free.rnn()
             # 主函数，存储所有的数据
@@ -42,12 +41,17 @@ class AlgorithmFactory:
             from now_used.algorithm.SimulatedAnnealing import SA
             subclass = SA()
         else:
-            raise ValueError("type值错误")
+            raise ValueError("type值只能是1-6")
+        self.execute(subclass)
 
+    def execute(self, subclass: Algorithm):
+        now_time = datetime.now()
+        tao = 0.2
+        suf = now_time.strftime('%Y_%m_%d_%H_%M_%S')
         # 主流程
         subclass.main(suf)
         if type < 4:
-            # 存储空气都位置，已经在getA的里面完成，因此此处不需要
+            # 存储空气的位置，已经在getA的里面完成，因此此处不需要
             # air_cell_abnormal_cell.get_air()
             # 存储异常区的位置
             air_cell_abnormal_cell.get_empty_hole()
@@ -58,8 +62,9 @@ class AlgorithmFactory:
             LineChart.main(type, suf)
             # 迭代次数与二范数
             LineChart1.main(tao, type, suf)
-            # 表格对比
-            CompaerTable.main(type, suf)
+
+        # 表格对比，待修改，10次的值
+        # CompaerTable.main(type, suf)
 
 # if __name__ == '__main__':
 #     for type in [3]:

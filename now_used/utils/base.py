@@ -1,17 +1,30 @@
 root_path = r'C:\Users\CHANG\Desktop\paper\second_paper\data'
 root_path_input = root_path + r'\input'
 root_path_output = root_path + r'\output'
+root_path_rawData = root_path + r'\rawData'
+
 # 模型大小不变，空气编号就不变
 air_cell_path = root_path_output + r'\air_cell'
 
 # VITAL 修改此处
 # 算法类型1-6
-type = 6
+type = 1
 # 数据集1-4
-dataset = r'\dataset1'
+dataset = r'\dataset3'
+# 是否重新生成obs
+regenerate_obs = True
+# 是否重新生成ijg,ray_way_j
+regenerate_ijg_ray_way_j = True
 
+# 原生
+row_data = root_path_rawData + dataset
 # 输入
-mesh = root_path_input + dataset + r'\mesh'
+root_path_input_dataset = root_path_input + dataset
+
+mesh = root_path_input_dataset + r'\mesh'
+obs_temp = root_path_input_dataset + r'\obs_temp'
+obs = root_path_input_dataset + r'\obs'
+
 # 输出
 root_path_output_dataset = root_path_output + dataset
 

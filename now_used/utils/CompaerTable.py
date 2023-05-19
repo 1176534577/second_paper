@@ -1,10 +1,11 @@
 """
- TOPIC 表格对比
+ TOPIC 表格对比，改这里就行了
 """
 
 import numpy as np
 
-from now_used.utils.base import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random
+from now_used.utils.base import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random, CG_all_res, \
+    GA_all_res, SA_all_res
 
 """def get_air(save=True):
     # 空气
@@ -88,26 +89,43 @@ def main(type, suf):
         path = MA_constant
     elif type == 3:
         path = MA_random
+    elif type == 4:
+        path = CG_all_res
+    elif type == 5:
+        path = GA_all_res
+    elif type == 6:
+        path = SA_all_res
     else:
-        raise ValueError('type只能是1，2，3')
+        raise ValueError('type值只能说1-6')
 
-    # 将最终结果（所有的格子）传入
-    # with open(r'..\..\data\output\final_need_you_1', 'r') as r:
-    with open(path + suf + r'\all_res', 'r') as r:
-        index = 1
-        while (r_line := r.readline()) != '':
-            if index in empty_hole:
-                # 异常区
-                value_abnormal.append(float(r_line.strip().split()[0]))
-            elif index not in air_cell:
-                # 非异常区，除去空气
-                value_normal.append(float(r_line.strip().split()[0]))
-            index += 1
+    ans_normal = []
+    ans_abnormal = []
 
-    # 减1、减2.65是为了二范数
-    new_value_abnormal = [val - 1 for val in value_abnormal]
-    new_value_normal = [val - 2.65 for val in value_normal]
-    print(f'异常区 {np.linalg.norm(new_value_abnormal):.4}')
-    print(f'非异常区 {np.linalg.norm(new_value_normal):.4}')
+    n = 10
+    for _ in range(n):
+        # todo 更改以下部分
+        # 将最终结果（所有的格子）传入
+        # with open(r'..\..\data\output\final_need_you_1', 'r') as r:
+        with open(path + suf + r'\all_res', 'r') as r:
+            index = 1
+            while (r_line := r.readline()) != '':
+                if index in empty_hole:
+                    # 异常区
+                    value_abnormal.append(float(r_line.strip().split()[0]))
+                elif index not in air_cell:
+                    # 非异常区，除去空气
+                    value_normal.append(float(r_line.strip().split()[0]))
+                index += 1
+
+        # 减1、减2.65是为了二范数
+        new_value_abnormal = [val - 1 for val in value_abnormal]
+        new_value_normal = [val - 2.65 for val in value_normal]
+
+        ans_normal.append(np.linalg.norm(new_value_normal))
+        ans_abnormal.append(np.linalg.norm(new_value_abnormal))
+
+    # 保留四位小数
+    print(f'非异常区 {sum(ans_normal) / n:.4}')
+    print(f'异常区 {sum(ans_abnormal) / n:.4}')
 
 # main()

@@ -15,7 +15,7 @@ class Calcsensitivity:
         self.obsf = obsf
         self.meshf = meshf
 
-    def calcsensitivity(self, ijf, Ray_way_j_file ):
+    def calcsensitivity(self, ijf, Ray_way_j_file, loger, isprint=True):
         """
         计算射线穿过格子的长度
 
@@ -44,9 +44,9 @@ class Calcsensitivity:
             for i in trange(ndat):
                 i += 1
                 fflist = f.readline().strip().split()
-                id, y0, x0, z0, theta0, phi0, d = int(fflist[0]) - 1, float(fflist[1]), float(
+                id, y0, x0, z0, theta0, phi0, d, derr = int(fflist[0]) - 1, float(fflist[1]), float(
                     fflist[2]), elev0 - float(fflist[3]), pi / 2 - float(fflist[4]), float(fflist[5]), float(
-                    fflist[6])
+                    fflist[7]), float(fflist[8])
 
 
                 # 另一种进度条形式，简单的
@@ -80,7 +80,7 @@ class Calcsensitivity:
                 # 考虑射线近乎(贴近)水平时的情况，此类射线不参与计算
                 if abs(uz) < 1e-5:
                     habnormal += 1
-                    # hlist.append([i, d, derr])
+                    hlist.append([i, d, derr])
                     continue
 
                 # 得到探测器的位置离散坐标
@@ -90,6 +90,7 @@ class Calcsensitivity:
                 # 射线在每个格子停留时，必定是停留在格子的某个面上
                 # 如果射线与z轴的夹角很小
                 if abs(uz - 1) < 1e-5:
+                    print("hava")
                     # 如果探测器几乎紧挨着格子壁，x0和y0就减小一点
                     if abs(x0 - xnode[xc + 1] < 1e-5): x0 -= (xnode[xc + 1] - xnode[xc]) / 10
                     if abs(y0 - ynode[yc + 1] < 1e-5): y0 -= (ynode[yc + 1] - ynode[yc]) / 10
@@ -182,12 +183,12 @@ class Calcsensitivity:
                             if zc == -1: done = True
                         elif xc == -1 or xc == mx:
                             xabnormal += 0
-                            # xlist.append([i, d, derr])
+                            xlist.append([i, d, derr])
                             # isnext =done = True
                             done = True
                         else:
                             yabnormal += 0
-                            # ylist.append([i, d, derr])
+                            ylist.append([i, d, derr])
                             # isnext =done = True
                             done = True
 
@@ -210,54 +211,54 @@ class Calcsensitivity:
             table.add_row(['总计', abnormal, ndat, '{:.2%}'.format(abnormal / ndat)])
             print(table)
 
-        # if isprint:
-        #     abnormal = habnormal + xabnormal + yabnormal
-        #     rayexclude.append([abnormal - oldabnormal, i - oldi + 1])
-        #     # 存储排除射线的相关信息
-        #     loger.write("异常射线")
-        #     loger.write('接近水平的射线: ')
-        #     # for h in hlist:
-        #     #     loger.write(f'{h[0]} ')
-        #     loger.write(i[0] for i in hlist)
-        #     # loger.write('\n')
-        #     loger.write('从x(正、负)方向射出的射线: ')
-        #     # for x in xlist:
-        #     #     loger.write(f'{x[0]} ')
-        #     loger.write(i[0] for i in xlist)
-        #     # loger.write('\n')
-        #     loger.write('从y(正、负)方向射出的射线: ')
-        #     # for y in ylist:
-        #     #     loger.write(f'{y[0]} ')
-        #     loger.write(i[0] for i in ylist)
-        #     # loger.write('\n')
-        #     # 输出排除掉格子的
-        #     loger.write("排除掉格子的编号:")
-        #     for h in hlist:
-        #         loger.write(f'{h[0]} {h[1]} {h[2]}')
-        #     for x in xlist:
-        #         loger.write(f'{x[0]} {x[1]} {x[2]}')
-        #     for y in ylist:
-        #         loger.write(f'{y[0]} {y[1]} {y[2]}')
-        #     # 存储正常射线的相关信息
-        #     # for no, i in enumerate(sen_nor):
-        #     #     loger.write(f'{rayexclude[no][1]}\n')
-        #     #     for ii in i:
-        #     #         loger.write(f'{ii} ')
-        #     #     loger.write('\n')
-        #     # 存储正常射线穿过的格子编号
-        #
-        #     loger.write(f'共{ndat}条射线------共{normal}条射线用到------共{abnormal}条射线被排除掉')
-        #     loger.write(
-        #         f'在被排除掉的射线中，接近水平的有{habnormal}条，从x(正、负)方向射出的有{xabnormal}条，从y(正、负)方向射出的有{yabnormal}条')
-        #
-        #     # 中文会引起对不齐，改成英文可以解决
-        #     # tabulate也是一个不错的以表格形式展示数据的包
-        #     try:
-        #         table = PrettyTable(["探测器编号", "排除数", "总数", "排除百分比"])
-        #         for i, ray in enumerate(rayexclude):
-        #             table.add_row([i + 1, ray[0], ray[1], '{:.2%}'.format(ray[0] / ray[1])])
-        #         table.add_row(['总计', abnormal, ndat, '{:.2%}'.format(abnormal / ndat)])
-        #         loger.write(table)
-        #     except Exception as e:
-        #         loger.write(str(e))
+        if isprint:
+            abnormal = habnormal + xabnormal + yabnormal
+            rayexclude.append([abnormal - oldabnormal, i - oldi + 1])
+            # 存储排除射线的相关信息
+            loger.write("异常射线")
+            loger.write('接近水平的射线: ')
+            # for h in hlist:
+            #     loger.write(f'{h[0]} ')
+            loger.write(i[0] for i in hlist)
+            # loger.write('\n')
+            loger.write('从x(正、负)方向射出的射线: ')
+            # for x in xlist:
+            #     loger.write(f'{x[0]} ')
+            loger.write(i[0] for i in xlist)
+            # loger.write('\n')
+            loger.write('从y(正、负)方向射出的射线: ')
+            # for y in ylist:
+            #     loger.write(f'{y[0]} ')
+            loger.write(i[0] for i in ylist)
+            # loger.write('\n')
+            # 输出排除掉格子的
+            loger.write("排除掉格子的编号:")
+            for h in hlist:
+                loger.write(f'{h[0]} {h[1]} {h[2]}')
+            for x in xlist:
+                loger.write(f'{x[0]} {x[1]} {x[2]}')
+            for y in ylist:
+                loger.write(f'{y[0]} {y[1]} {y[2]}')
+            # 存储正常射线的相关信息
+            # for no, i in enumerate(sen_nor):
+            #     loger.write(f'{rayexclude[no][1]}\n')
+            #     for ii in i:
+            #         loger.write(f'{ii} ')
+            #     loger.write('\n')
+            # 存储正常射线穿过的格子编号
+
+            loger.write(f'共{ndat}条射线------共{normal}条射线用到------共{abnormal}条射线被排除掉')
+            loger.write(
+                f'在被排除掉的射线中，接近水平的有{habnormal}条，从x(正、负)方向射出的有{xabnormal}条，从y(正、负)方向射出的有{yabnormal}条')
+
+            # 中文会引起对不齐，改成英文可以解决
+            # tabulate也是一个不错的以表格形式展示数据的包
+            try:
+                table = PrettyTable(["探测器编号", "排除数", "总数", "排除百分比"])
+                for i, ray in enumerate(rayexclude):
+                    table.add_row([i + 1, ray[0], ray[1], '{:.2%}'.format(ray[0] / ray[1])])
+                table.add_row(['总计', abnormal, ndat, '{:.2%}'.format(abnormal / ndat)])
+                loger.write(table)
+            except Exception as e:
+                loger.write(str(e))
 

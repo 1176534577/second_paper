@@ -9,9 +9,9 @@ def getPos(my, mx, mz,i):
     z = i % mz
     return int(y), int(x), int(z)
 
-def getpinghua():
+def getpinghua(col):
     my, mx, mz = 11,12,10
-    col = 1320
+    # col = 1320
     m = np.matrix(np.zeros((col, col)))
 
     for i in range(col):
