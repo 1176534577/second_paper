@@ -17,7 +17,7 @@ fileName = r'\small_norm_4_28_11_42_29_0.2_0'
 def noise_free():
     k = 1000
     ans = []
-    with open(root_path + r'\data\compare\no_noise' + fileName, 'r') as r:
+    with open(r'C:\Users\CHANG\Desktop\paper\second_paper\data\compare\old\no_noise\normda_1', 'r') as r:
         while (line := r.readline()) != '':
             ans.append(float(line))
     return k, ans
@@ -26,7 +26,7 @@ def noise_free():
 def noise_constant():
     k = 1000
     another_ans = []
-    with open(root_path + r'\data\compare\have_noise' + fileName, 'r') as r:
+    with open(r'C:\Users\CHANG\Desktop\paper\second_paper\data\compare\old\have_noise\normda', 'r') as r:
         while (line := r.readline()) != '':
             another_ans.append(float(line))
     return k, another_ans
@@ -35,7 +35,7 @@ def noise_constant():
 def noise_random():
     k = 2000
     noise_random = []
-    with open(root_path + r'\data\compare\noise_random' + fileName, 'r') as r:
+    with open(r'C:\Users\CHANG\Desktop\paper\second_paper\data\compare\noise_random\big_norm_9_30_0.1_3', 'r') as r:
         while (line := r.readline()) != '':
             noise_random.append(float(line))
     return k, noise_random
@@ -53,11 +53,11 @@ def plot(k, array, name):
     ax.yaxis.get_offset_text().set(size=fontsize)  # 左上角
     # plt.rcParams['font.family'] = ['STFangsong']
     plt.rcParams['font.sans-serif'] = ['STFangsong']
-    plt.xlabel('迭代次数$k$', fontsize=fontsize)
-    plt.ylabel(r'$||\varepsilon_k||_2$', fontsize=fontsize)
+    # plt.xlabel('迭代次数$k$', fontsize=fontsize)
+    # plt.ylabel(r'$||\varepsilon_k||_2$', fontsize=fontsize)
     plt.tick_params(labelsize=fontsize)
 
-    plt.plot(timee, array, label=name)
+    plt.plot(timee, array, color='k', label=name)
     plt.tight_layout()
     plt.savefig(name + '.svg', dpi=600, format='svg')
 
@@ -72,7 +72,8 @@ def plot(k, array, name):
     # plt.legend(loc="upper right")
     plt.show()
 
-def main(flag_free,flag_cosntant,free_random):
+
+def main(flag_free, flag_cosntant, free_random):
     if flag_free:
         k, array = noise_free()
         plot(k, array, '无噪声右')
@@ -85,5 +86,6 @@ def main(flag_free,flag_cosntant,free_random):
         k, array = noise_random()
         plot(k, array, '随机噪声右')
 
+
 # 1执行，0不执行
-main(1,0,0)
+main(1, 1, 1)
