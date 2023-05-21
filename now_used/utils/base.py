@@ -10,7 +10,7 @@ air_cell_path = root_path_output + r'\air_cell'
 # 算法类型1-6
 type = 1
 # 数据集1-4
-dataset = r'\dataset3'
+dataset = r'\dataset1'
 # 是否重新生成obs
 regenerate_obs = True
 # 是否重新生成ijg,ray_way_j
@@ -40,6 +40,6 @@ SA_all_res = root_path_output_dataset + r'\SA\all_res_'
 
 # MA=MyAlgorithm
 root_path_output_dataset_MA = root_path_output_dataset + r'\MyAlgorithm'
-MA_free = root_path_output_dataset_MA + r'\noise_free\\'
-MA_constant = root_path_output_dataset_MA + r'\noise_constant\\'
-MA_random = root_path_output_dataset_MA + r'\noise_random\\'
+MA_free = root_path_output_dataset_MA + r'\noise_free'
+MA_constant = root_path_output_dataset_MA + r'\noise_constant'
+MA_random = root_path_output_dataset_MA + r'\noise_random'
