@@ -6,7 +6,7 @@ from math import log10
 
 from matplotlib import pyplot as plt
 
-from now_used.utils.base import MA_free, MA_constant, MA_random
+from now_used.config import MA_free, MA_constant, MA_random
 
 fontsize = 50
 length = 12

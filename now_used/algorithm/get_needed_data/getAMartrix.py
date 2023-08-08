@@ -5,7 +5,7 @@
 # from numpy.linalg import matrix_rank
 from sympy import zeros
 
-from now_used.utils.base import ijg
+from now_used.config import ijg
 
 
 class getA:

@@ -1,11 +1,12 @@
+
 # 空气
 # air_cell= set()
 # with open(r'..\data\output\air_cell','r') as r:
 #     while (line:=r.readline())!='':
 #         air_cell.append(int(line))
 # my, mx, mz = 17,22,10
-from cellbnd import cellbnd
-from getmesh import getmesh
+from now_used.pre_data.cellbnd import cellbnd
+from now_used.pre_data.getmesh import getmesh
 
 
 class TheoreticalValue:

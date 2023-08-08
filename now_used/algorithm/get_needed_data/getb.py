@@ -3,10 +3,15 @@
 from numpy import matrix
 
 # from Paper.getA_temp import getA, count_less_and_equal_num
-from now_used.utils.base import ray_way_j
+from now_used.config import ray_way_j
 
 
 def return_b(col):
+    """
+    [h;a]
+    :param col:
+    :return:
+    """
     # a = getA.get_instance(my, mx, mz)
     # li = count_less_and_equal_num(a.return_A(), 10)
     #

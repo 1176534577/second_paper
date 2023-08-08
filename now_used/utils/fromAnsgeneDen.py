@@ -3,7 +3,7 @@
 """
 
 from now_used.algorithm.get_needed_data.getA import getA
-from now_used.utils.base import air_cell_path, MA_free, MA_constant, MA_random
+from now_used.config import air_cell_path, MA_free, MA_constant, MA_random
 
 
 # ylist = [7, 8, 9]
@@ -61,13 +61,13 @@ def main(type, suf):
         path = MA_random
     else:
         raise ValueError('type只能是1，2，3')
-
+    path += '\\'
     # now_time = datetime.now()
 
     # suf = r'\3_11_18_56_14_0.2_0'
 
     # 将压缩后的体素的编号还原为压缩前的编号
-    with open(path + suf+r'res', 'r') as r:
+    with open(path + suf + r'\res', 'r') as r:
         index = 0
         while (line := r.readline()) != '':
             val = float(line.strip().split()[0])
@@ -76,12 +76,12 @@ def main(type, suf):
             index += 1
 
     # 每个体素的密度写入文件
-    with open(path + suf+r'all_res', 'w') as w:
+    with open(path + suf + r'\all_res', 'w') as w:
         for value in ans:
             w.write(f'{value}\n')
 
     # 除去外部空气的每个体素的密度写入文件
-    with open(path + suf+r'res_without_air', 'w') as w:
+    with open(path + suf + r'\res_without_air', 'w') as w:
         for value in ans_without_outside:
             if value != -2:
                 w.write(f'{value}\n')

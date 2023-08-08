@@ -5,7 +5,7 @@
 from matplotlib import pyplot as plt
 
 # plt.rc('font',size=7)
-from now_used.utils.base import MA_free, MA_random, MA_constant
+from now_used.config import MA_free, MA_random, MA_constant
 
 fontsize = 50
 length = 12

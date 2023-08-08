@@ -5,7 +5,7 @@ import numpy as np
 from numpy import zeros, array, matrix
 
 from now_used.algorithm.get_needed_data.AddGetA import getpinghua
-from now_used.utils.base import root_path, air_cell_path, ijg
+from now_used.config import root_path, air_cell_path, ijg
 
 
 class getA:
@@ -14,7 +14,8 @@ class getA:
     def __init__(self, my, mx, mz):
         self.__air_cell = None
         self.__row = None
-        self.__col = None  # 也就是未知数的个数
+        # 被射线穿过的体素数量
+        self.__col = None
         self.__m = None
         self.__cell_total = None
         self.__oldtonew_row = None
@@ -166,6 +167,10 @@ class getA:
         return self.__row
 
     def return_col(self):
+        """
+        被射线穿过的体素数量
+        :return:
+        """
         return self.__col
 
     def return_oldtonew_row(self):

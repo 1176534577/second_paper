@@ -1,7 +1,7 @@
 """
  TOPIC 计算空气格子和异常区格子编号，从1开始
 """
-from now_used.utils.base import air_cell_path, abnormal_cell_path
+from now_used.config import air_cell_path, abnormal_cell_path
 
 
 def get_air(save=True):

@@ -4,7 +4,7 @@
 import numpy as np
 from numpy import zeros
 
-from now_used.utils.base import ijg
+from now_used.config import ijg
 
 
 class getA:

@@ -4,7 +4,7 @@
 
 import numpy as np
 
-from now_used.utils.base import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random, CG_all_res, \
+from now_used.config import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random, CG_all_res, \
     GA_all_res, SA_all_res
 
 """def get_air(save=True):

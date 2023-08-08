@@ -1,4 +1,4 @@
-from now_used.utils.base import mesh
+from now_used.config import mesh
 
 
 def getabc():

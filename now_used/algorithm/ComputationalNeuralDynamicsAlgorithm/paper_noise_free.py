@@ -6,21 +6,22 @@ from matplotlib import pyplot as plt
 from numpy import zeros, matrix, eye, hstack, vstack, array
 from numpy.linalg import pinv, norm
 
-from now_used.algorithm.Algorithm import Algorithm
+from now_used.algorithm.commonAlgorithm import commonAlgorithm
 from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getBound import get_Bound
 from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b
-from now_used.utils.base import MA_free
+from now_used.config import MA_free, dataset_no,air_cell_path
 
 
-class rnn(Algorithm):
+class rnn(commonAlgorithm):
     def __init__(self):
 
         my, mx, mz = getabc()
         self.H_A = None
         self.b = None
         aa = getA.get_instance(my, mx, mz)
+        self.aa = aa
         # 目前需要在row的前面，因为在下面方法里面会更新row，可以防止col的后面
         # todo 更改此处low,up,A的值
         self.low = 0
@@ -40,6 +41,10 @@ class rnn(Algorithm):
         self.initH_A()
 
     def initH_A(self):
+        """
+        初始化A值
+        :return:
+        """
         row = self.row
         col = self.col
 
@@ -81,13 +86,13 @@ class rnn(Algorithm):
 
     def l(self, my, mx, mz):
         """
-        常数
+        [h;a;-low;up]
 
         :return:
         :rtype: sympy.Matrix
         """
-        xiajie, shangjie = get_Bound(my, mx, mz, self.low, self.up)
-        self.b = vstack((vstack((self.bb, -xiajie)), shangjie))
+        low, up = get_Bound(my, mx, mz, self.low, self.up)
+        self.b = vstack((vstack((self.bb, -low)), up))
 
     def solver(self, suf, init_value=0.0, outer_layer_cycle=10, inner_layer_cycle=10):
         start = time.time()
@@ -120,11 +125,11 @@ class rnn(Algorithm):
         lk = self.b
         integral = zeros((row + 2 * col, 1))
         tao = 0.2
-        # 0到1之间，rou*tao*tao=ρτ^2
-        gama = 0.0001
+        # 0到1之间，yipuxilong*tao*tao=不会写的字母*τ^2
+        miu = 0.0001
 
-        ee = [0.0] * (outer_layer_cycle * inner_layer_cycle + 1)
-        eexiao = [0.0] * (outer_layer_cycle * inner_layer_cycle + 1)
+        ee_big = [0.0] * (outer_layer_cycle * inner_layer_cycle + 1)
+        ee_small = [0.0] * (outer_layer_cycle * inner_layer_cycle + 1)
         print("初始化工作完成")
 
         k = 0
@@ -133,7 +138,7 @@ class rnn(Algorithm):
         # for k in range(2):
         #     # 积分项部分
         #     # common=Ak * w[k, :].T - lk
-        #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+        #     ee_big[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
         #     integral += (Ak * w[k, :].T - lk)
         #
         #     val = pinAk * (-h * (Ak * w[k, :].T - lk))
@@ -154,11 +159,11 @@ class rnn(Algorithm):
 
         # for k in range(total - 1):
         #     # 积分项
-        #     ee[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+        #     ee_big[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
         #     integral += (Ak * w[k, :].T - lk)
         #
         #     # val = pinAk * (- h * (Ak * w[k, :].T - lk) - r * tao * integral)
-        #     val = pinAk * tao * (- lamda * (Ak * w[k, :].T - lk) - gama * (Ak * w[k, :].T - lk + lamda * integral))
+        #     val = pinAk * tao * (- lamda * (Ak * w[k, :].T - lk) - miu * (Ak * w[k, :].T - lk + lamda * integral))
         #
         #     w[k + 1, :] = w[k, :] + val.T
         #     d = w[k+1, col:3 * col]
@@ -183,13 +188,15 @@ class rnn(Algorithm):
             for j in range(inner_layer_cycle):
                 k = i * inner_layer_cycle + j
 
-                # 积分项
-                ee[k] = norm(Ak * w[k, :].T - lk)
-                eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+                # 本次大的误差
+                ee_big[k] = norm(Ak * w[k, :].T - lk)
+                # 本次小的误差
+                ee_small[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+                # 历史积分项
                 integral += (Ak * w[k, :].T - lk)
 
                 # 后半部分
-                val = pinAk * ((Ak * w[k, :].T - lk) - gama * integral)
+                val = pinAk * ((Ak * w[k, :].T - lk) + miu * integral)
                 # 组合
                 w[k + 1, :] = w[k, :] - val.T
 
@@ -215,8 +222,8 @@ class rnn(Algorithm):
             # print("两者是否相等:", count == col)
             # endregion
 
-            print("二范数：", ee[k])
-            print("小二范数：", eexiao[k])
+            print("二范数：", ee_big[k])
+            print("小二范数：", ee_small[k])
             # 每次结果的c要更新结果的d
             d = w[k + 1, col:3 * col]
             Ak = matrix(self.A(d))
@@ -228,11 +235,11 @@ class rnn(Algorithm):
             # 只针对最原始的数据（基本+平滑性）的二范数
             # new_norm = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
             # print("小二范数：", new_norm)
-            # 如果满足两次结果差值在1e-6内，则提前退出循环
-            if abs(old_norm - eexiao[k]) < 1e-3 and k > 20:
-                print("两次误差小于1e-6,退出")
+            # 如果满足两次结果差值在1e-3内，则提前退出循环
+            if abs(old_norm - ee_small[k]) < 1e-3 and k > 50:
+                print("两次误差小于1e-3且迭代超过50次,退出")
                 break
-            old_norm = eexiao[k]
+            old_norm = ee_small[k]
 
             # region 疑似是空洞的数目
             # count = 0
@@ -248,8 +255,8 @@ class rnn(Algorithm):
         print("运行了", k, "次")
 
         # 记录最后一次的数据
-        ee[k] = norm(Ak * w[k, :].T - lk)
-        eexiao[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
+        ee_big[k] = norm(Ak * w[k, :].T - lk)
+        ee_small[k] = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
 
         # 循环结束（这里是指最后一次的数据也记录完了）
         # region 此处删除不需要的大数据
@@ -261,25 +268,38 @@ class rnn(Algorithm):
         # now_time = datetime.now()
 
         # 创建以时间命名的文件夹，因为是以时间命名的，因此此文件夹之前必然不存在
-        path = MA_free + suf
+        path = MA_free + '\\' + suf
         os.makedirs(path)
 
-        with open(
-                path + r'\big_norm', 'w') as wda, open(
-            path + r'\small_norm', 'w') as wxiao:
-            for value_da, value_xiao in zip(ee[:k + 1], eexiao[:k + 1]):
+        with open(path + r'\big_norm', 'w') as wda, open(path + r'\small_norm', 'w') as wxiao:
+            for value_da, value_xiao in zip(ee_big[:k + 1], ee_small[:k + 1]):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
         try:
+            ans = [2.65] * self.aa.return_cell_total()
+            ss = self.aa.return_newtoold_col()
+
+            with open(air_cell_path, 'r') as r:
+                while (r_line := r.readline()) != '':
+                    ans[int(r_line.strip().split()[0]) - 1] = 0
+
             with open(path + r'\res', 'w') as d:
+                index = 0
                 for value in array(w[k, :col])[0]:
                     d.write(f'{value}\n')
+                    ans[ss[index] - 1] = value
+                    index += 1
+
+            # 每个体素的密度写入文件
+            with open(path + r'\all_res', 'w') as w:
+                for value in ans:
+                    w.write(f'{value}\n')
         except Exception as e:
             print(e)
 
-        print("最终二范数:", ee[k])
-        print("最终小二范数:", eexiao[k])
+        print("最终二范数:", ee_big[k])
+        print("最终小二范数:", ee_small[k])
         count = 0
         for i in array(w[k, :col])[0]:
             if low <= float(i) <= up:
@@ -297,24 +317,35 @@ class rnn(Algorithm):
         plt.title(f"二范数 tao={tao}")
         plt.xlabel("时间")
         plt.ylabel("误差的二范数")
-        plt.plot(timee, ee[:k + 1])
+        plt.plot(timee, ee_big[:k + 1])
         plt.subplot(2, 1, 2)
         plt.title(f"二范数 tao={tao}")
         plt.xlabel("时间")
         plt.ylabel("误差的二范数")
-        plt.plot(timee, eexiao[:k + 1])
+        plt.plot(timee, ee_small[:k + 1])
         plt.show()
 
         end = time.time()
         print("用时：", end - start)
+
+
 
     def main(self, suf):
 
         # number = 0
         # for init_value in [0.0, -1000.0, 1000.0, ]:
         # for init_value in [0.0]:
-        # init_value = 1.2
         init_value = 1.2
+        if dataset_no == 1:
+            init_value = 1
+        elif dataset_no == 2:
+            init_value = 1.5
+        elif dataset_no == 3:
+            init_value = 2
+        elif dataset_no == 4:
+            init_value = 2.5
+        else:
+            print("数据集不存在")
         self.solver(suf, init_value, 50, 1)
         # number += 1
 

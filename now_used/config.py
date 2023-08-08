@@ -1,3 +1,14 @@
+# VITAL 修改此处
+# 是否重新生成obs，当前全部自己手动实现
+regenerate_obs = True
+# 是否重新生成ijg,ray_way_j，当前全部自己手动实现
+regenerate_ijg_ray_way_j = True
+# 算法类型1-6
+algorithm_type = 2
+# 数据集1-4
+dataset_no = 1
+
+
 root_path = r'C:\Users\CHANG\Desktop\paper\second_paper\data'
 root_path_input = root_path + r'\input'
 root_path_output = root_path + r'\output'
@@ -5,17 +16,8 @@ root_path_rawData = root_path + r'\rawData'
 
 # 模型大小不变，空气编号就不变
 air_cell_path = root_path_output + r'\air_cell'
-
-# VITAL 修改此处
-# 算法类型1-6
-type = 1
-# 数据集1-4
-dataset = r'\dataset1'
-# 是否重新生成obs
-regenerate_obs = True
-# 是否重新生成ijg,ray_way_j
-regenerate_ijg_ray_way_j = True
-
+# 数据集
+dataset = r'\dataset' + str(dataset_no)
 # 原生
 row_data = root_path_rawData + dataset
 # 输入

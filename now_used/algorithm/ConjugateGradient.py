@@ -3,15 +3,15 @@ import random
 import numpy as np
 from numpy import matrix
 
-from now_used.algorithm.Algorithm import Algorithm
+from now_used.algorithm.commonAlgorithm import commonAlgorithm
 from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
 from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b_normal
-from now_used.utils.base import CG_all_res
+from now_used.config import CG_all_res
 
 
-class CG(Algorithm):
+class CG(commonAlgorithm):
 
     def __init__(self):
 

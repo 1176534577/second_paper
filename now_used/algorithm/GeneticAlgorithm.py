@@ -1,14 +1,14 @@
 import numpy as np
 
-from now_used.algorithm.Algorithm import Algorithm
+from now_used.algorithm.commonAlgorithm import commonAlgorithm
 # 定义编码长度
 from now_used.algorithm.get_needed_data import getabc, getb
 from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
 from now_used.algorithm.get_needed_data.getA import getA
-from now_used.utils.base import GA_all_res
+from now_used.config import GA_all_res
 
 
-class GA(Algorithm):
+class GA(commonAlgorithm):
     def __init__(self):
         self.DNA_SIZE = 20
         # 定义种群容量 即个体数量

@@ -1,11 +1,11 @@
 # id, y0, x0, z0, theta0, phi0, d
-from math import ceil
 
-from now_used.utils.base import row_data, regenerate_obs, obs_temp
-
+from now_used.config import row_data, regenerate_obs, obs_temp
 
 # num = 2
-# root_path += r'\data\input\dataset' + str(num)
+# row_data = r'C:\Users\CHANG\Desktop\paper\second_paper\data\rawData\dataset2'
+# obs_temp=r'C:\Users\CHANG\Desktop\paper\second_paper\data\input\dataset2\obs_temp'
+
 def combine4to1():
     n = 12000
     count=0
@@ -19,7 +19,7 @@ def combine4to1():
                 a = r1.readline().strip().split()[0:3]
                 if float(a[2]) < 1:
                     continue
-                w.write(f'1 0 10.1 0 {a[1]} {a[0]} {a[2]}\n')
+                w.write(f'1 7.5 -0.1 0.1  {a[1]} {a[0]} {a[2]}\n')
                 count+=1
 
         # 12000个
@@ -29,7 +29,7 @@ def combine4to1():
                 a = r1.readline().strip().split()[0:3]
                 if float(a[2]) < 1:
                     continue
-                w.write(f'2 -7.6 0 0 {a[1]} {a[0]} {a[2]}\n')
+                w.write(f'2 15.1 10 0.1 {a[1]} {a[0]} {a[2]}\n')
                 count+=1
 
         # 12000个
@@ -39,7 +39,7 @@ def combine4to1():
                 a = r1.readline().strip().split()[0:3]
                 if float(a[2]) < 1:
                     continue
-                w.write(f'3 0 -10.1 0 {a[1]} {a[0]} {a[2]}\n')
+                w.write(f'3 7.5 20.1 0.1 {a[1]} {a[0]} {a[2]}\n')
                 count+=1
 
         # 12000个
@@ -49,7 +49,7 @@ def combine4to1():
                 a = r1.readline().strip().split()[0:3]
                 if float(a[2]) < 1:
                     continue
-                w.write(f'4 7.6 0 0 {a[1]} {a[0]} {a[2]}\n')
+                w.write(f'4 -0.1 10 0.1 {a[1]} {a[0]} {a[2]}\n')
                 count+=1
         w.seek(0, 0)
         w.write(f'{count}')

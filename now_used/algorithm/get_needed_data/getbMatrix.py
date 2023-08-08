@@ -1,7 +1,7 @@
 ﻿from sympy import Matrix
 
 # from numpy import matrix
-from now_used.utils.base import ray_way_j
+from now_used.config import ray_way_j
 
 
 # import os.path

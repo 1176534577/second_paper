@@ -1,6 +1,9 @@
 from math import floor
 
-from now_used.utils.base import obs, obs_temp, regenerate_obs
+from now_used.config import obs, obs_temp, regenerate_obs
+
+# obs_temp=r'C:\Users\CHANG\Desktop\paper\second_paper\data\input\dataset2\obs_temp'
+# obs=r'C:\Users\CHANG\Desktop\paper\second_paper\data\input\dataset2\obs'
 
 
 def generate_obs():
@@ -20,15 +23,7 @@ def generate_obs():
                 d.readline()
         dd.seek(0,0)
         dd.write(f'{count}')
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
-        # d.readline()
+
     # print('第一行'+d_line)
     # print('第二行'+d.readline())
     # print('第三行'+d.readline())

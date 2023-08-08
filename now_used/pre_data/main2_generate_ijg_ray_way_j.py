@@ -6,7 +6,7 @@ from now_used.pre_data.Calcu_sensitivity import Calcsensitivity
 # class Loger:
 #     def write(self, value):
 #         print(value)
-from now_used.utils.base import obs, mesh, ijg, ray_way_j, regenerate_ijg_ray_way_j
+from now_used.config import obs, mesh, ijg, ray_way_j, regenerate_ijg_ray_way_j
 
 
 # num=2
@@ -16,6 +16,7 @@ def main():
     if regenerate_ijg_ray_way_j:
         # loger = Loger()
         Calcsensitivity(obsf=obs, meshf=mesh).calcsensitivity(ijf=ijg, Ray_way_j_file=ray_way_j)
-# else:
-#     a = rnn(13, 14, 10)
-#     a.solver(tao=0.01, total=100)
+
+
+if __name__ == '__main__':
+    main()

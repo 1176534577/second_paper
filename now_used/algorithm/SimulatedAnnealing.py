@@ -6,12 +6,12 @@ import numpy as np
 from now_used.algorithm.get_needed_data import getabc, getb
 from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
 from now_used.algorithm.get_needed_data.getA import getA
-from now_used.algorithm.Algorithm import Algorithm
+from now_used.algorithm.commonAlgorithm import commonAlgorithm
 # x为公式里的x1,y为公式里面的x2
-from now_used.utils.base import SA_all_res
+from now_used.config import SA_all_res
 
 
-class SA(Algorithm):
+class SA(commonAlgorithm):
     def __init__(self, iter=100, T0=100, Tf=0.01, alpha=0.99):
         my, mx, mz = getabc.getabc()
         instance = getA.get_instance(my, mx, mz)
