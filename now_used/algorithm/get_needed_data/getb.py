@@ -3,11 +3,14 @@
 from numpy import matrix
 
 # from Paper.getA_temp import getA, count_less_and_equal_num
-from now_used.config import ray_way_j
+# from now_used.config import ray_way_j
+from now_used.config_new import Config
 
 
 def return_b(col):
     """
+    加平滑性的，自己的算法（无噪声、恒定噪声、随机噪声）使用
+
     [h;a]
     :param col:
     :return:
@@ -18,7 +21,7 @@ def return_b(col):
 
     # index = 0
     m = []
-    with open(ray_way_j, 'r') as d:
+    with open(Config.ray_way_j, 'r') as d:
         while (d_line := d.readline()) != '':
             # 增加平滑性
             # value = float(d_line.strip())
@@ -37,11 +40,15 @@ def return_b_test():
 
 
 def return_b_normal():
+    """
+    不加平滑性的，共轭梯度法、遗传算法、模拟退火法使用
+    :return:
+    """
     # a = getA.get_instance(my, mx, mz)
     # li = count_less_and_equal_num(a.return_A(), 10)
     #
     m = []
-    with open(ray_way_j, 'r') as d:
+    with open(Config.ray_way_j, 'r') as d:
         while (d_line := d.readline()) != '':
             # 增加平滑性
             m.append(float(d_line.strip()))

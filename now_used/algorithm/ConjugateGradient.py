@@ -8,8 +8,8 @@ from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua,
 from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b_normal
-from now_used.config import CG_all_res
-
+# from now_used.config import CG_all_res, air_cell_path
+from now_used.config_new import Config
 
 class CG(commonAlgorithm):
 
@@ -17,6 +17,7 @@ class CG(commonAlgorithm):
 
         a, b, c = getabc()
         instance = getA.get_instance(a, b, c)
+        self.aa = instance
         self.A = matrix(instance.return_A_normal())
         col = instance.return_col()
         self.B = return_b_normal()
@@ -113,9 +114,32 @@ class CG(commonAlgorithm):
     def main(self, suf):
         # 包装一层
         x = self.frcg(self.fun, self.gfun, self.Xref)
-        with open(CG_all_res + suf, 'w') as w:
+        # 写入最终结果
+        try:
+            ans = [2.65] * self.aa.return_cell_total()
+            ss = self.aa.return_newtoold_col()
+
+            with open(Config.air_cell_path, 'r') as r:
+                while (r_line := r.readline()) != '':
+                    ans[int(r_line.strip().split()[0]) - 1] = 0
+
+            index = 0
             for value in x[0]:
-                w.write(f'{value}\n')
+                ans[ss[index] - 1] = value
+                index += 1
+
+            # 每个体素的密度写入文件
+            with open(Config.CG_all_res + suf, 'w') as ww:
+                for value in ans:
+                    ww.write(f'{value}\n')
+        except Exception as e:
+            print(e)
+
+        self.aa.clear()
+
+        # with open(CG_all_res + suf, 'w') as w:
+        #     for value in x[0]:
+        #         w.write(f'{value}\n')
 
     def frcg(self, fun, gfun, x0):
         # x0是初始点，fun和gfun分别是目标函数和梯度

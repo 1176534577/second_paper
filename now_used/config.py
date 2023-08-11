@@ -4,12 +4,12 @@ regenerate_obs = True
 # 是否重新生成ijg,ray_way_j，当前全部自己手动实现
 regenerate_ijg_ray_way_j = True
 # 算法类型1-6
-algorithm_type = 2
+algorithm_type = 1
 # 数据集1-4
-dataset_no = 1
+dataset_no = 2
 
 
-root_path = r'C:\Users\CHANG\Desktop\paper\second_paper\data'
+root_path = r'C:\Users\CHANG\Desktop\paper\second_paper_副本1'
 root_path_input = root_path + r'\input'
 root_path_output = root_path + r'\output'
 root_path_rawData = root_path + r'\rawData'

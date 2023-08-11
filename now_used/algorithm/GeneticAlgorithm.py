@@ -5,8 +5,8 @@ from now_used.algorithm.commonAlgorithm import commonAlgorithm
 from now_used.algorithm.get_needed_data import getabc, getb
 from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
 from now_used.algorithm.get_needed_data.getA import getA
-from now_used.config import GA_all_res
-
+# from now_used.config import GA_all_res, air_cell_path
+from now_used.config_new import Config
 
 class GA(commonAlgorithm):
     def __init__(self):
@@ -27,6 +27,7 @@ class GA(commonAlgorithm):
 
         my, mx, mz = getabc.getabc()
         instance = getA.get_instance(my, mx, mz)
+        self.aa = instance
         self.A = instance.return_A_normal()
         col = instance.return_col()
         self.B = getb.return_b_normal()
@@ -226,10 +227,35 @@ class GA(commonAlgorithm):
             if boolean:
                 print(f"迭代{index + 1}代")
                 break
+            if index > 250:
+                break
             index += 1
             # plt.ioff()
             # plot_3d(ax)
 
-        with open(GA_all_res + suf, 'w') as w:
-            for val in x:
-                w.write(f'{val}\n')
+        # 写入最终结果
+        try:
+            ans = [2.65] * self.aa.return_cell_total()
+            ss = self.aa.return_newtoold_col()
+
+            with open(Config.air_cell_path, 'r') as r:
+                while (r_line := r.readline()) != '':
+                    ans[int(r_line.strip().split()[0]) - 1] = 0
+
+            index = 0
+            for value in x:
+                ans[ss[index] - 1] = value
+                index += 1
+
+            # 每个体素的密度写入文件
+            with open(Config.GA_all_res + suf, 'w') as ww:
+                for value in ans:
+                    ww.write(f'{value}\n')
+        except Exception as e:
+            print(e)
+
+        self.aa.clear()
+
+        # with open(GA_all_res + suf, 'w') as w:
+        #     for val in x:
+        #         w.write(f'{val}\n')

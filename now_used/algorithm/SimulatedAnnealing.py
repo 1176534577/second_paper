@@ -7,14 +7,16 @@ from now_used.algorithm.get_needed_data import getabc, getb
 from now_used.algorithm.get_needed_data.AddGetA import getypinghua, getxpinghua, getzpinghua
 from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.commonAlgorithm import commonAlgorithm
-# x为公式里的x1,y为公式里面的x2
-from now_used.config import SA_all_res
+# from now_used.config import SA_all_res, air_cell_path
+from now_used.config_new import Config
 
+# x为公式里的x1,y为公式里面的x2
 
 class SA(commonAlgorithm):
     def __init__(self, iter=100, T0=100, Tf=0.01, alpha=0.99):
         my, mx, mz = getabc.getabc()
         instance = getA.get_instance(my, mx, mz)
+        self.aa = instance
         self.A = instance.return_A_normal()
         col = instance.return_col()
         self.B = getb.return_b_normal()
@@ -120,12 +122,36 @@ class SA(commonAlgorithm):
         # f_best, idx = self.best()
         # print(f"F={f_best}, x={self.x[idx]}, y={self.y[idx]}")
         print(f"F={self.func(self.X)}")
-        with open(SA_all_res + suf, 'w') as w:
-            for val in self.X:
-                w.write(f'{val[0, 0]}\n')
+
+        # 写入最终结果
+        try:
+            ans = [2.65] * self.aa.return_cell_total()
+            ss = self.aa.return_newtoold_col()
+
+            with open(Config.air_cell_path, 'r') as r:
+                while (r_line := r.readline()) != '':
+                    ans[int(r_line.strip().split()[0]) - 1] = 0
+
+            index = 0
+            for value in self.X:
+                ans[ss[index] - 1] = value
+                index += 1
+
+            # 每个体素的密度写入文件
+            with open(Config.SA_all_res + suf, 'w') as ww:
+                for value in ans:
+                    ww.write(f'{value}\n')
+        except Exception as e:
+            print(e)
+
+        # with open(SA_all_res + suf, 'w') as w:
+        #     for val in self.X:
+        #         w.write(f'{val[0, 0]}\n')
 
     def main(self, suf):
         self.run(suf)
+
+        self.aa.clear()
 
 # plt.plot(sa.history['T'], sa.history['f'])
 # plt.title('SA')

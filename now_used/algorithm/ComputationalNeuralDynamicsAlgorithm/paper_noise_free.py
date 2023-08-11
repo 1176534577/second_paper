@@ -11,7 +11,8 @@ from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getBound import get_Bound
 from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b
-from now_used.config import MA_free, dataset_no,air_cell_path
+# from now_used.config import MA_free, air_cell_path
+from now_used.config_new import Config
 
 
 class rnn(commonAlgorithm):
@@ -224,10 +225,6 @@ class rnn(commonAlgorithm):
 
             print("二范数：", ee_big[k])
             print("小二范数：", ee_small[k])
-            # 每次结果的c要更新结果的d
-            d = w[k + 1, col:3 * col]
-            Ak = matrix(self.A(d))
-            pinAk = pinv(self.A(d))
 
             # 整体的二范数
             # print("二范数：", norm(Ak * w[k, :].T - lk))
@@ -236,10 +233,15 @@ class rnn(commonAlgorithm):
             # new_norm = norm(Ak[:row, :col] * w[k, :col].T - lk[:row, :])
             # print("小二范数：", new_norm)
             # 如果满足两次结果差值在1e-3内，则提前退出循环
-            if abs(old_norm - ee_small[k]) < 1e-3 and k > 50:
-                print("两次误差小于1e-3且迭代超过50次,退出")
+            if abs(old_norm - ee_small[k]) < 1e-3 or k > 10:
+                print("两次误差小于1e-3或者迭代超过10次,退出")
                 break
             old_norm = ee_small[k]
+
+            # 每次结果的c要更新结果的d
+            d = w[k + 1, col:3 * col]
+            Ak = matrix(self.A(d))
+            pinAk = pinv(self.A(d))
 
             # region 疑似是空洞的数目
             # count = 0
@@ -268,7 +270,7 @@ class rnn(commonAlgorithm):
         # now_time = datetime.now()
 
         # 创建以时间命名的文件夹，因为是以时间命名的，因此此文件夹之前必然不存在
-        path = MA_free + '\\' + suf
+        path = Config.MA_free + '\\' + suf
         os.makedirs(path)
 
         with open(path + r'\big_norm', 'w') as wda, open(path + r'\small_norm', 'w') as wxiao:
@@ -276,11 +278,20 @@ class rnn(commonAlgorithm):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
+        print("最终二范数:", ee_big[k])
+        print("最终小二范数:", ee_small[k])
+        count = 0
+        for i in array(w[k, :col])[0]:
+            if low <= float(i) <= up:
+                count += 1
+        print("数目:", count, "总数：", col)
+        print("两者是否相等:", count == col)
+
         try:
             ans = [2.65] * self.aa.return_cell_total()
             ss = self.aa.return_newtoold_col()
 
-            with open(air_cell_path, 'r') as r:
+            with open(Config.air_cell_path, 'r') as r:
                 while (r_line := r.readline()) != '':
                     ans[int(r_line.strip().split()[0]) - 1] = 0
 
@@ -292,61 +303,52 @@ class rnn(commonAlgorithm):
                     index += 1
 
             # 每个体素的密度写入文件
-            with open(path + r'\all_res', 'w') as w:
+            with open(path + r'\all_res', 'w') as ww:
                 for value in ans:
-                    w.write(f'{value}\n')
+                    ww.write(f'{value}\n')
         except Exception as e:
             print(e)
-
-        print("最终二范数:", ee_big[k])
-        print("最终小二范数:", ee_small[k])
-        count = 0
-        for i in array(w[k, :col])[0]:
-            if low <= float(i) <= up:
-                count += 1
-        print("数目:", count, "总数：", col)
-        print("两者是否相等:", count == col)
 
         # region 此处删除不需要的大数据
         del w
         # endregion
 
-        timee = [val * tao for val in range(k + 1)]
-        plt.rcParams['font.family'] = ['STFangsong']
-        plt.subplot(2, 1, 1)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, ee_big[:k + 1])
-        plt.subplot(2, 1, 2)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, ee_small[:k + 1])
-        plt.show()
+        # timee = [val * tao for val in range(k + 1)]
+        # plt.rcParams['font.family'] = ['STFangsong']
+        # plt.subplot(2, 1, 1)
+        # plt.title(f"二范数 tao={tao}")
+        # plt.xlabel("时间")
+        # plt.ylabel("误差的二范数")
+        # plt.plot(timee, ee_big[:k + 1])
+        # plt.subplot(2, 1, 2)
+        # plt.title(f"二范数 tao={tao}")
+        # plt.xlabel("时间")
+        # plt.ylabel("误差的二范数")
+        # plt.plot(timee, ee_small[:k + 1])
+        # plt.show()
 
         end = time.time()
         print("用时：", end - start)
-
-
 
     def main(self, suf):
 
         # number = 0
         # for init_value in [0.0, -1000.0, 1000.0, ]:
         # for init_value in [0.0]:
-        init_value = 1.2
-        if dataset_no == 1:
-            init_value = 1
-        elif dataset_no == 2:
-            init_value = 1.5
-        elif dataset_no == 3:
-            init_value = 2
-        elif dataset_no == 4:
-            init_value = 2.5
-        else:
-            print("数据集不存在")
+        # init_value = 1.2
+        # if dataset_no == 1:
+        #     init_value = 1
+        # elif dataset_no == 2:
+        #     init_value = 1.5
+        # elif dataset_no == 3:
+        #     init_value = 2
+        # elif dataset_no == 4:
+        #     init_value = 2.5
+        # else:
+        #     print("数据集不存在")
+        init_value = 2.65
         self.solver(suf, init_value, 50, 1)
+        self.aa.clear()
         # number += 1
 
 # r.solver(0.1, 1, 2)

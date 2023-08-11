@@ -2,7 +2,8 @@ from datetime import datetime
 
 from algorithm.ComputationalNeuralDynamicsAlgorithm import paper_noise_free, paper_noise_constant, paper_noise_random
 from now_used.algorithm.commonAlgorithm import commonAlgorithm
-from now_used.config import algorithm_type, dataset_no
+# from now_used.config import algorithm_type, dataset_no
+from now_used.config_new import Config
 from utils import fromAnsgeneDen, LineChart, LineChart1, air_cell_abnormal_cell
 
 """
@@ -18,13 +19,15 @@ class AlgorithmFactory:
         pass
 
     # 方法入口
-    def main(self):
+    def main(self, algorithm_type, dataset_no):
         myDict = {1: "无噪声", 2: "恒定噪声", 3: "随机噪声", 4: "共轭梯度法", 5: "遗传算法", 6: "模拟退火法"}
         print("算法类型：" + myDict.get(algorithm_type))
         print("数据集：" + str(dataset_no))
-        self.selector()
+        # Config.setAlgorithmType(algorithm_type)
+        Config.setDataset(dataset_no)
+        self.selector(algorithm_type)
 
-    def selector(self):
+    def selector(self,algorithm_type):
         if algorithm_type == 1:
             subclass = paper_noise_free.rnn()
             # 主函数，存储所有的数据

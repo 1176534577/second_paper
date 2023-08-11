@@ -7,7 +7,7 @@ import numpy as np
 from now_used.config import abnormal_cell_path, air_cell_path, MA_free, MA_constant, MA_random, CG_all_res, \
     GA_all_res, SA_all_res
 
-"""def get_air(save=True):
+def get_air(save=True):
     # 空气
     air_cell = set()
 
@@ -40,9 +40,9 @@ from now_used.config import abnormal_cell_path, air_cell_path, MA_free, MA_const
             for val in air_cell:
                 w.write(f'{val}\n')
 
-    return air_cell"""
+    return air_cell
 
-"""def get_empty_hole(save=True):
+def get_empty_hole(save=True):
     my, mx, mz = 13, 14, 10
 
     ylist = [7, 8, 9]
@@ -56,13 +56,13 @@ from now_used.config import abnormal_cell_path, air_cell_path, MA_free, MA_const
         for x in xlist:
             for z in zlist:
                 abnormal_cell.append(x * my * mz + y * mz + z + 1)
-    
+
     if save:
         with open(root_path + r'\data\output\abnormal_cell', 'w') as w:
             for val in abnormal_cell:
                 w.write(f'{val}\n')
-    
-    return abnormal_cell"""
+
+    return abnormal_cell
 
 
 def main(type, suf):
@@ -101,7 +101,7 @@ def main(type, suf):
     ans_normal = []
     ans_abnormal = []
 
-    n = 10
+    n = 3
     for _ in range(n):
         # todo 更改以下部分
         # 将最终结果（所有的格子）传入
@@ -121,8 +121,8 @@ def main(type, suf):
         new_value_abnormal = [val - 1 for val in value_abnormal]
         new_value_normal = [val - 2.65 for val in value_normal]
 
-        ans_normal.append(np.linalg.norm(new_value_normal))
         ans_abnormal.append(np.linalg.norm(new_value_abnormal))
+        ans_normal.append(np.linalg.norm(new_value_normal))
 
     # 保留四位小数
     print(f'非异常区 {sum(ans_normal) / n:.4}')

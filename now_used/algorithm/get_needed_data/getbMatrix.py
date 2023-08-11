@@ -1,7 +1,8 @@
 ﻿from sympy import Matrix
 
 # from numpy import matrix
-from now_used.config import ray_way_j
+# from now_used.config import ray_way_j
+from now_used.config_new import Config
 
 
 # import os.path
@@ -9,7 +10,7 @@ from now_used.config import ray_way_j
 
 def return_b():
     m = []
-    with open(ray_way_j, 'r') as d:
+    with open(Config.ray_way_j, 'r') as d:
         while (d_line := d.readline()) != '':
             m.append(float(d_line.strip()))
     return Matrix(m)

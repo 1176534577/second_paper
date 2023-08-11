@@ -6,8 +6,8 @@ from math import sin, cos
 from prettytable.prettytable import PrettyTable
 from tqdm import trange
 
-from cellbnd import cellbnd
-from getmesh import getmesh
+from now_used.pre_data.cellbnd import cellbnd
+from now_used.pre_data.getmesh import getmesh
 
 
 class Calcsensitivity:

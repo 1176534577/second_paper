@@ -12,7 +12,8 @@ from now_used.algorithm.get_needed_data.getA import getA
 from now_used.algorithm.get_needed_data.getBound import get_Bound
 from now_used.algorithm.get_needed_data.getabc import getabc
 from now_used.algorithm.get_needed_data.getb import return_b
-from now_used.config import MA_random,dataset_no,air_cell_path
+# from now_used.config import MA_random, air_cell_path
+from now_used.config_new import Config
 
 
 # import sympy
@@ -151,10 +152,7 @@ class rnn(commonAlgorithm):
 
             print("二范数：", ee_big[k])
             print("小二范数：", ee_small[k])
-            # 每次结果的c要更新结果的d
-            d = w[k + 1, col:3 * col]
-            Ak = matrix(self.A(d))
-            pinAk = pinv(self.A(d))
+
 
             # 整体的二范数
             # print("二范数：", norm(Ak * w[k + 1, :].T - lk))
@@ -168,6 +166,11 @@ class rnn(commonAlgorithm):
                 print("两次误差小于1e-3且迭代超过50次,退出")
                 break
             old_norm = ee_small[k]
+
+            # 每次结果的c要更新结果的d
+            d = w[k + 1, col:3 * col]
+            Ak = matrix(self.A(d))
+            pinAk = pinv(self.A(d))
 
 
         k += 1
@@ -187,7 +190,7 @@ class rnn(commonAlgorithm):
         # now_time = datetime.now()
 
         # 创建以时间命名的文件夹，因为是以时间命名的，因此此文件夹之前必然不存在
-        path = MA_random +'\\'+ suf
+        path = Config.MA_random +'\\'+ suf
         os.makedirs(path)
         
         with open(
@@ -197,11 +200,20 @@ class rnn(commonAlgorithm):
                 wda.write(f'{value_da}\n')
                 wxiao.write(f'{value_xiao}\n')
 
+        print("最终二范数:", ee_big[k])
+        print("最终小二范数:", ee_small[k])
+        count = 0
+        for i in array(w[k, :col])[0]:
+            if low <= float(i) <= up:
+                count += 1
+        print("数目:", count, "总数：", col)
+        print("两者是否相等:", count == col)
+
         try:
             ans = [2.65] * self.aa.return_cell_total()
             ss = self.aa.return_newtoold_col()
 
-            with open(air_cell_path, 'r') as r:
+            with open(Config.air_cell_path, 'r') as r:
                 while (r_line := r.readline()) != '':
                     ans[int(r_line.strip().split()[0]) - 1] = 0
 
@@ -213,54 +225,49 @@ class rnn(commonAlgorithm):
                     index += 1
 
             # 每个体素的密度写入文件
-            with open(path + r'\all_res', 'w') as w:
+            with open(path + r'\all_res', 'w') as ww:
                 for value in ans:
-                    w.write(f'{value}\n')
+                    ww.write(f'{value}\n')
         except Exception as e:
             print(e)
 
-        print("最终二范数:", ee_big[k])
-        print("最终小二范数:", ee_small[k])
-        count = 0
-        for i in array(w[k, :col])[0]:
-            if low <= float(i) <= up:
-                count += 1
-        print("数目:", count, "总数：", col)
-        print("两者是否相等:", count == col)
 
         # region 此处删除不需要的大数据
         del w
         # endregion
 
-        timee = [val * tao for val in range(k + 1)]
-        plt.rcParams['font.family'] = ['STFangsong']
-        plt.subplot(2, 1, 1)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, ee_big[:k + 1])
-        plt.subplot(2, 1, 2)
-        plt.title(f"二范数 tao={tao}")
-        plt.xlabel("时间")
-        plt.ylabel("误差的二范数")
-        plt.plot(timee, ee_small[:k + 1])
-        plt.show()
+        # timee = [val * tao for val in range(k + 1)]
+        # plt.rcParams['font.family'] = ['STFangsong']
+        # plt.subplot(2, 1, 1)
+        # plt.title(f"二范数 tao={tao}")
+        # plt.xlabel("时间")
+        # plt.ylabel("误差的二范数")
+        # plt.plot(timee, ee_big[:k + 1])
+        # plt.subplot(2, 1, 2)
+        # plt.title(f"二范数 tao={tao}")
+        # plt.xlabel("时间")
+        # plt.ylabel("误差的二范数")
+        # plt.plot(timee, ee_small[:k + 1])
+        # plt.show()
 
         end = time.time()
         print("用时：", end - start)
 
 
     def main(self, suf):
-        init_value = 1.2
-        if dataset_no == 1:
-            init_value = 1
-        elif dataset_no == 2:
-            init_value = 1.5
-        elif dataset_no == 3:
-            init_value = 2
-        elif dataset_no == 4:
-            init_value = 2.5
-        else:
-            print("数据集不存在")
+        # init_value = 1.2
+        # if dataset_no == 1:
+        #     init_value = 1
+        # elif dataset_no == 2:
+        #     init_value = 1.5
+        # elif dataset_no == 3:
+        #     init_value = 2
+        # elif dataset_no == 4:
+        #     init_value = 2.5
+        # else:
+        #     print("数据集不存在")
+        init_value=2.65
         self.solver(suf, init_value, 50, 1)
+        self.aa.clear()
+
 # r.solver(0.1, 1, 2)

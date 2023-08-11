@@ -8,12 +8,15 @@ from now_used.pre_data.Calcu_sensitivity import Calcsensitivity
 #         print(value)
 from now_used.config import obs, mesh, ijg, ray_way_j, regenerate_ijg_ray_way_j
 
-
 # num=2
 # root_path_input=root_path+r'\data\input\dataset'+str(num)
 # root_path_output=root_path+r'\data\output\dataset'+str(num)
 def main():
     if regenerate_ijg_ray_way_j:
+        print("obs来源" + obs)
+        print("mesh来源" + mesh)
+        print("ijg存储" + ijg)
+        print("ray_way_j存储" + ray_way_j)
         # loger = Loger()
         Calcsensitivity(obsf=obs, meshf=mesh).calcsensitivity(ijf=ijg, Ray_way_j_file=ray_way_j)
 

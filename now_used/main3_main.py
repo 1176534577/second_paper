@@ -1,4 +1,6 @@
 from now_used.algorithm_factory import AlgorithmFactory
+import time
+
 # from now_used.pre_data.generate_obs.new_obs import generate_obs
 # from now_used.pre_data import generate_ijg_ray_way_j
 
@@ -9,6 +11,13 @@ from now_used.algorithm_factory import AlgorithmFactory
 # generate_ijg_ray_way_j.main()
 
 # 实施方法
-# dataset_no 数据集编号 1-4
 # algorithm_type 算法类型 1-6
-AlgorithmFactory().main()
+# dataset_no 数据集编号 1-4
+for algorithm_type in range(4, 7):
+    for dataset_no in range(1, 5):
+        for _ in range(3):
+            try:
+                AlgorithmFactory().main(algorithm_type, dataset_no)
+            except Exception as e:
+                print(e)
+            time.sleep(3)

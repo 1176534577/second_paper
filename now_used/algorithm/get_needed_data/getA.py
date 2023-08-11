@@ -5,7 +5,8 @@ import numpy as np
 from numpy import zeros, array, matrix
 
 from now_used.algorithm.get_needed_data.AddGetA import getpinghua
-from now_used.config import root_path, air_cell_path, ijg
+# from now_used.config import root_path, air_cell_path, ijg
+from now_used.config_new import Config
 
 
 class getA:
@@ -59,7 +60,7 @@ class getA:
             for z in range(mz):
                 air_cell.add((mx - 1) * my * mz + y * mz + z + 1)
 
-        with open(air_cell_path, 'w') as w:
+        with open(Config.air_cell_path, 'w') as w:
             for air in air_cell:
                 w.write(f'{air}\n')
 
@@ -83,7 +84,7 @@ class getA:
         # 压缩行、列  todo 列不是有序的，乱序的，需要更改
         # abspath=os.path.abspath('.')
         # path = root_path + r'\data\output\new_ijg'
-        with open(ijg, 'r') as d:
+        with open(Config.ijg, 'r') as d:
             self.__cell_total = int(d.readline().strip().split()[1])
             oldtonew_row = {}
             oldtonew_col = {}
@@ -99,7 +100,7 @@ class getA:
                 #     col_set.add(col)
                 # oldtonew_col[col] = new_col
                 # new_col += 1
-        # 射线满足不了所有格子
+        # 射线满足不了所有格子，满足论文中D的需求，必须全部体素
         for col in range(1, 1821):
             if col not in air_cell:
                 col_set.add(col)
@@ -116,7 +117,7 @@ class getA:
         # m = [[0] * col for _ in range(row)]
 
         # 填入矩阵
-        with open(ijg, 'r') as d:
+        with open(Config.ijg, 'r') as d:
             d.readline()
             while (d_line := d.readline()) != '':
                 shuzu = d_line.strip().split()
@@ -142,6 +143,9 @@ class getA:
             getA.__a = getA(my, mx, mz)
         return getA.__a
 
+    def clear(self):
+        getA.__a = None
+
     def return_A(self):
         copym = matrix(self.__m)
         # 增加平滑性
@@ -150,6 +154,7 @@ class getA:
         # for i in range(self.__col):
         #     copym[i,i] += 0.5
         self.__row += self.__col
+        # self.__m = copym
         return copym
 
     def return_A_test(self):
@@ -238,34 +243,35 @@ def search_location(a):
 
 
 if __name__ == '__main__':
-    my, mx, mz = 13, 14, 10
-    a = getA.get_instance(my, mx, mz)
-    m = a.return_A()
-    key = a.return_oldtonew_col().keys()
-
-    ylist = [7, 8, 9]
-    xlist = [5, 6, 7, 8]
-    zlist = [3, 4]
-
-    empty_hole = []
-
-    for y in ylist:
-        for x in xlist:
-            for z in zlist:
-                empty_hole.append(x * my * mz + y * mz + z + 1)
-
-    solve = []
-    for i in key:
-        if i in empty_hole:
-            solve.append(2)
-        else:
-            solve.append(2.65)
-
-    val = matrix(solve).T
-    y = m * val
-    with open(root_path + r'\data\output\duibi', 'w') as w:
-        for i in array(y):
-            w.write(f'{str(i[0])}\n')
+    pass
+    # my, mx, mz = 13, 14, 10
+    # a = getA.get_instance(my, mx, mz)
+    # m = a.return_A()
+    # key = a.return_oldtonew_col().keys()
+    #
+    # ylist = [7, 8, 9]
+    # xlist = [5, 6, 7, 8]
+    # zlist = [3, 4]
+    #
+    # empty_hole = []
+    #
+    # for y in ylist:
+    #     for x in xlist:
+    #         for z in zlist:
+    #             empty_hole.append(x * my * mz + y * mz + z + 1)
+    #
+    # solve = []
+    # for i in key:
+    #     if i in empty_hole:
+    #         solve.append(2)
+    #     else:
+    #         solve.append(2.65)
+    #
+    # val = matrix(solve).T
+    # y = m * val
+    # with open(root_path + r'\data\output\duibi', 'w') as w:
+    #     for i in array(y):
+    #         w.write(f'{str(i[0])}\n')
 
     # print(count_less_num(m))
     # print(suo(m))
